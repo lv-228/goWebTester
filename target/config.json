@@ -1,0 +1,32 @@
+{
+	"http_user_headers": 
+	{
+		"protocol_version": "HTTP/1.1",
+		"User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:100.0) Gecko/20100101 Firefox/100.0",
+		"Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+		"Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
+		"Accept-Encoding": "gzip, deflate, br",
+		"Content-Type": "application/x-www-form-urlencoded",
+		"Content-Length": "nil",
+		"Origin": "nil",
+		"Connection": "keep-alive",
+		"Referer": "nil",
+		"Cookie": "nil",
+		"Upgrade-Insecure-Requests": "1",
+		"Sec-Fetch-Dest": "empty",
+		"Sec-Fetch-Mode": "corse",
+		"Sec-Fetch-Site": "same-origin"
+	},
+	"creds":
+	{
+		"login": "login",
+		"password": "password"
+	},
+	"target":
+	{
+		"host": "https://0a66008703f2ad2ac091332a00de00fb.web-security-academy.net",
+		"login_page": "/login",
+		"main_page": "/",
+		"auth_path": "/rest/user/login"
+	}
+}

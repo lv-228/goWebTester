@@ -1,0 +1,16 @@
+{{template "base" .}}
+{{define "title"}}
+Запрос/ответ
+{{end}}
+{{define "main"}}
+<ul class="uk-subnav uk-subnav-pill" uk-switcher>
+    <li><a href="#">Запрос</a></li>
+    <li><a href="#">Ответ</a></li>
+    <li><a href="#">Список (по ip)</a></li>
+</ul>
+<ul class="uk-switcher uk-margin">
+    <li>{{template "request" .}}</li>
+    <li>Тут будет тело ответа <a href="#" uk-switcher-item="0">Посмотерть запрос</a></li>
+    <li>Тут будет список запросов/ответов</li>
+</ul>
+{{end}}

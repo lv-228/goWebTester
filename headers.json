@@ -1,0 +1,161 @@
+{
+	"header_type": 
+	{
+		"general": "1",
+		"request": "2",
+		"response": "3",
+		"entity": "4"
+	},
+	"heders":
+	{
+		"Accept":{
+			"type": 2,
+		},
+		"Accept-Charset":{
+			"type": 2,
+		},
+		"Accept-Encoding":{
+			"type": 2,
+		},
+		"Accept-Language":{
+			"type": 2,
+		},
+		"Accept-Ranges":{
+			"type": 3,
+		},
+		"Age":{
+			"type": 3,
+		},
+		"Allow":{
+			"type": 3,
+		},
+		"Alternates":{
+			"type": 3,
+		},
+		"Authorization":{
+			"type": 2,
+		},
+		"Cache-Control":{
+			"type": 1,
+		},
+		"Connection":{
+			"type": 1,
+		},
+		"Content-Disposition":{
+			"type": [2,3]
+		},
+		"Content-Encoding":{
+			"type": [2,3]
+		},
+		"Content-Language":{
+			"type": [2,3]
+		},
+		"Content-Length":{
+			"type": 2,
+		},
+		"Content-Location":{
+			"type": 2,
+		},
+		"Content-MD5":{
+			"type": 2,
+		},
+		"Content-Range":{
+			"type": 2,
+		},
+		"Content-Type":{
+			"type": 2,
+		},
+		"Content-Version":{
+			"type": 2,
+		},
+		"Date": {
+			"type": 1,
+		},
+		"Derived-From":{
+			"type": 2,
+		},
+		"ETag":{},
+		"Expect":{
+			"type": 2,
+		},
+		"Expires":{
+			"type": 2,
+		},
+		"From":{
+			"type": 2,
+		},
+		"Host":{
+			"type": 2,
+		},
+		"If-Match":{
+			"type": 2,
+		},
+		"If-Modified-Since":{
+			"type": 2,
+		},
+		"If-None-Match":{
+			"type": 2,
+		},
+		"If-Range":{
+			"type": 2,
+		},
+		"If-Unmodified-Since":{
+			"type": 2,
+		},
+		"Last-Modified":{
+			"type": 2,
+		},
+		"Link":{
+			"type": 2,
+		},
+		"Location":{},
+		"Max-Forwards":{
+			"type": 2,
+		},
+		"MIME-Version":{
+			"type": 1,
+		},
+		"Pragma":{
+			"type": 1,
+		},
+		"Proxy-Authentication":{},
+		"Proxy-Authorization":{
+			"type": 2,
+		},
+		"Public":{},
+		"Range":{
+			"type": 2,
+		},
+		"Referer":{
+			"type": 2,
+		},
+		"Retry-After":{},
+		"Server":{},
+		"Title":{
+			"type": 2,
+		},
+		"TE":{
+			"type": 2,
+		},
+		"Trailer":{
+			"type": 1,
+		},
+		"Transfer-Encoding":{
+			"type": 1,
+		},
+		"Upgrade":{
+			"type": 1,
+		},
+		"User-Agent":{
+			"type": 2,
+		},
+		"Vary":{},
+		"Via":{
+			"type": 1,
+		},
+		"Warning":{
+			"type": 1,
+		},
+		"WWW-Authentication":{}
+	}
+}
