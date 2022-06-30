@@ -2,22 +2,26 @@ package http_funcs
 
 import(
 	"strings"
+	"net/http"
 )
 
-func findHttpHeaderForReplace(headers map[string]string) map[string]string {
-	answer := map[string]string{}
+type HeaderData struct{
+	Headers map[string][]string
+}
+
+func findHttpHeaderForReplace(headers map[string]string) (string, string) {
 	for key, elem := range headers{
 		find_header := strings.Index(elem, Var_simbol_data)
 		if find_header == -1{
 			continue
 		}
-		answer[key] = elem
+		return elem, key
 		break
 	}
-	return answer
+	return "", ""
 }
 
-func ParseTextareaHeaders(textarea_data string) (map[string]string, map[string]string){
+func ParseTextareaHeaders(textarea_data string) (map[string]string, string, string){
 
 	header_value := map[int]string{}
 
@@ -40,9 +44,9 @@ func ParseTextareaHeaders(textarea_data string) (map[string]string, map[string]s
 		answer[header] = value
 	}
 
-	replaceHeader := findHttpHeaderForReplace(answer)
+	elem, key := findHttpHeaderForReplace(answer)
 
-	return answer, replaceHeader
+	return answer, elem, key
 
 }
 
@@ -64,6 +68,15 @@ func getPurlFieldData(purl string) map[string]string{
 		value = key_value_right_str[index_eq+1:]
 		answer[key] = value
 		purl = purl[index_delimeter+1:]
+	}
+	return answer
+}
+
+//Поменять потом на шаблон
+func GetRespHeaders(resp *http.Response) map[string][]string{
+	answer := map[string][]string{}
+	for i, elem := range resp.Header{
+		answer[i] = elem
 	}
 	return answer
 }

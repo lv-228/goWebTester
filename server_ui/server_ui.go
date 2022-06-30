@@ -124,7 +124,7 @@ func sendRequestHandler(w http.ResponseWriter, r *http.Request, title string){
         log.Println("error:", err)
     }
 
-    headers_request, replace_header := http_funcs.ParseTextareaHeaders(r.FormValue("list_headers"))
+    headers_request, header_value, header_key := http_funcs.ParseTextareaHeaders(r.FormValue("list_headers"))
 
 	request1 := &http_funcs.ReqData{
 		Req_type: r.FormValue("method"),
@@ -134,20 +134,14 @@ func sendRequestHandler(w http.ResponseWriter, r *http.Request, title string){
 
 	headerReplace   := &Replace{}
 	bfReplace := &Replace{}
-	var hKey string
 
-
-	if len(replace_header) == 1{
+	if header_key != ""{
 		// step, err := strconv.Atoi(r.FormValue("step"))
 		// if err != nil{
 		// 	log.Fatalln("Ошибка шага")
 		// }
 
-		for key, _ := range replace_header{
-			headerReplace.Create(headers_request[key], []string{r.FormValue("values")})
-			hKey = key
-		}
-
+		headerReplace.Create(header_value, []string{r.FormValue("values")})
 		headerReplace.CreateRange()
 
 		
@@ -180,33 +174,22 @@ func sendRequestHandler(w http.ResponseWriter, r *http.Request, title string){
 	// 		log.Println(GetHtmlTagByNameAndClass(body, "p", "is-warning"))
 	// 	}
 	// }
-
-	// for ;; {
-	// 	str, err := bf_data_repeats.Itteration(false)
-	// 	log.Println(str)
-	// 	if err != nil{
-	// 		log.Fatalln(err)
-	// 	}
-	// }
 		
 	}
 
 	for ;; {
-		str_bf, err := bfReplace.Itteration(false)
-		if err != nil{
-			log.Fatalln(err)
+		str_bf, err_bf := bfReplace.Itteration(false)
+		str_head, err_head := headerReplace.Itteration(false)
+
+		if err_bf != nil && err_head != nil{
+			log.Fatalln("DATA END")
 		}
-		str_head, err := headerReplace.Itteration(false)
-		if err != nil{
-			log.Fatalln(err)
-		}
-		headers_request[hKey] = str_head
+
+		headers_request[header_key] = str_head
 		request1.Headers = headers_request
 		headers, _ := http_funcs.SendRequest(request1, str_bf)
 		log.Println(headers_request, headers, str_bf)
 	}
-
-
 
 	_, body_response := http_funcs.SendRequest(request1, r.FormValue("data"))
 

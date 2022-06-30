@@ -2,14 +2,9 @@ package http_funcs
 
 import (
 	"net/http"
-	"net/url"
 	"io"
 	"log"
 	"compress/gzip"
-	//"os"
-	//"regexp"
-	//"strings"
-	"bytes"
 	"time"
 	"net/http/httptrace"
 )
@@ -33,29 +28,8 @@ func GetRequest(url string) *http.Response{
 	return resp
 }
 
-//Поменять потом на шаблон
-func GetRespHeaders(resp *http.Response) map[string][]string{
-	answer := map[string][]string{}
-	for i, elem := range resp.Header{
-		answer[i] = elem
-	}
-	return answer
-}
-
 func SendRequest(request *ReqData, data string) (map[string][]string, string){
-	data_reader := bytes.NewBuffer([]byte(data))
-	switch request.Headers["Content-Type"] {
-		case "application/json":
-			data_reader = bytes.NewBuffer([]byte(data))
-		case "application/x-www-form-urlencoded":
-			url_data := url.Values{}
-			for i, elem := range getPurlFieldData(data){
-				url_data.Set(i, elem)
-			}
-			data_reader = bytes.NewBuffer([]byte(url_data.Encode()))
-		default:
-			log.Fatalln("Error application format!")
-	}
+	data_reader := GetDataReader(request, data)
 
 	req, err := http.NewRequest(request.Req_type, request.Url, data_reader)
 

@@ -36,7 +36,7 @@ func (r *Replace) Itteration(json bool) (string, error){
 		r.CurrentValuePos++
 		return answer, nil
 	}
-	return "", errors.New("Out of range") 
+	return http_funcs.ValueHeaderReplace(r.ReplaceString, r.Values[r.CurrentValuePos-1], Var_simbol), errors.New("Out of range") 
 }
 
 func (r *Replace) CreateRange(){
