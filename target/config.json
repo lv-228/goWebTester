@@ -15,7 +15,8 @@
 		"Upgrade-Insecure-Requests": "1",
 		"Sec-Fetch-Dest": "empty",
 		"Sec-Fetch-Mode": "corse",
-		"Sec-Fetch-Site": "same-origin"
+		"Sec-Fetch-Site": "same-origin",
+		"X-Forwarded-For": "203.0.113.195"
 	},
 	"creds":
 	{
@@ -24,7 +25,7 @@
 	},
 	"target":
 	{
-		"host": "https://0a66008703f2ad2ac091332a00de00fb.web-security-academy.net",
+		"host": "http://localhost:3000",
 		"login_page": "/login",
 		"main_page": "/",
 		"auth_path": "/rest/user/login"

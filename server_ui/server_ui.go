@@ -9,7 +9,8 @@ import(
 	"web_tester/http_funcs"
 	"web_tester/target"
 	"encoding/json"
-	"strconv"
+	"strings"
+	//"strconv"
 )
 
 type Page struct {
@@ -131,34 +132,81 @@ func sendRequestHandler(w http.ResponseWriter, r *http.Request, title string){
 		Headers: headers_request,
 	}
 
+	headerReplace   := &Replace{}
+	bfReplace := &Replace{}
+	var hKey string
+
+
 	if len(replace_header) == 1{
-		values, err := strconv.Atoi(r.FormValue("values"))
-		if err != nil{
-			log.Fatalln("Ошибка диапазона значений")
+		// step, err := strconv.Atoi(r.FormValue("step"))
+		// if err != nil{
+		// 	log.Fatalln("Ошибка шага")
+		// }
+
+		for key, _ := range replace_header{
+			headerReplace.Create(headers_request[key], []string{r.FormValue("values")})
+			hKey = key
 		}
 
-		step, err := strconv.Atoi(r.FormValue("step"))
-		if err != nil{
-			log.Fatalln("Ошибка шага")
-		}
+		headerReplace.CreateRange()
 
-		for i := 1; i < values; i += step {
-			for key, elem := range replace_header{
-				headers_request[key] = http_funcs.ValueHeaderReplace(elem, strconv.Itoa(i), http_funcs.Var_simbol_http)
-			}
-			request1.Headers = headers_request
-			headers_response, body := http_funcs.SendRequest(request1, r.FormValue("data"))
-			log.Println(headers_response)
-			log.Println(http_funcs.GetHtmlTagByNameAndClass(body, "p", "is-warning"))
-		}
+		
+
+		//log.Println(http_funcs.GetHtmlTagByNameAndClass(body, "p", "is-warning"))
 	}
 
-	bf_file_path := r.FormValue("bf_journal")
+	if(r.FormValue("bf_journal") != ""){
+		bf_file, err := os.ReadFile(r.FormValue("bf_journal"))
+		if err != nil{
+			log.Fatalln(err)
+		}
 
-	if(bf_file_path != ""){
-		http_funcs.RequestRepeater(http_funcs.SendRequest, request1, r.FormValue("data"), bf_file_path)
-		return
+		words := strings.Fields(string(bf_file))
+
+		
+
+		bfReplace.Create(r.FormValue("data"), words)
+
+	// 	if request.Headers["Content-Type"] == "application/json"{
+	// 	for _, elem := range words{
+	// 		headers, _ := SendRequest(request, valueJsonReplace(data, elem, Var_simbol_data))
+	// 		log.Println(elem, headers)
+	// 		//log.Println(GetHtmlTagByNameAndClass(body, "p", ))
+	// 	}
+	// }	else if request.Headers["Content-Type"] == "application/x-www-form-urlencoded"{
+	// 	for _, elem := range words{
+	// 		headers, body := SendRequest(request, valuePurlReplace(data, elem, Var_simbol_data))
+	// 		log.Println(elem, headers)
+	// 		log.Println(GetHtmlTagByNameAndClass(body, "p", "is-warning"))
+	// 	}
+	// }
+
+	// for ;; {
+	// 	str, err := bf_data_repeats.Itteration(false)
+	// 	log.Println(str)
+	// 	if err != nil{
+	// 		log.Fatalln(err)
+	// 	}
+	// }
+		
 	}
+
+	for ;; {
+		str_bf, err := bfReplace.Itteration(false)
+		if err != nil{
+			log.Fatalln(err)
+		}
+		str_head, err := headerReplace.Itteration(false)
+		if err != nil{
+			log.Fatalln(err)
+		}
+		headers_request[hKey] = str_head
+		request1.Headers = headers_request
+		headers, _ := http_funcs.SendRequest(request1, str_bf)
+		log.Println(headers_request, headers, str_bf)
+	}
+
+
 
 	_, body_response := http_funcs.SendRequest(request1, r.FormValue("data"))
 
