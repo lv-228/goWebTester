@@ -9,35 +9,31 @@ import (
 	"net/http/httptrace"
 )
 
-type ReqData struct{
+type Req struct{
 	Req_type, Url string
-	Headers map[string]string
+	Headers_obj *HeaderData
 }
 
-var Var_simbol_data = "¡"
-
-var Var_simbol_http = "¶"
-
-var client = &http.Client{}
-
-func GetRequest(url string) *http.Response{
-	resp, err := client.Get(url)
-	if err != nil{
-		log.Fatalln(err)
-	}
-	return resp
+func (r *Req) Create(req_type string, url string, headers *HeaderData){
+	r.Req_type = req_type
+	r.Url = url
+	r.Headers_obj = headers
 }
 
-func SendRequest(request *ReqData, data string) (map[string][]string, string){
-	data_reader := GetDataReader(request, data)
+func (r *Req) SendAndGetResult(data string) (map[string][]string, string){
+	return r.sendRequest(data)
+}
 
-	req, err := http.NewRequest(request.Req_type, request.Url, data_reader)
+func (r *Req) sendRequest(data string) (map[string][]string, string){
+	data_reader := GetDataReader(r, data)
+
+	req, err := http.NewRequest(r.Req_type, r.Url, data_reader)
 
 	if err != nil{
 		log.Fatalln(err)
 	}
 
-	for i, elem := range request.Headers{
+	for i, elem := range r.Headers_obj.Headers{
 		req.Header.Set(i, elem)
 	}
 
@@ -73,6 +69,18 @@ func SendRequest(request *ReqData, data string) (map[string][]string, string){
 	log.Println(resp.StatusCode)
 
 	return GetRespHeaders(resp), string(bytes)
+}
+
+var Var_simbol_data = "¡"
+
+var client = &http.Client{}
+
+func GetRequest(url string) *http.Response{
+	resp, err := client.Get(url)
+	if err != nil{
+		log.Fatalln(err)
+	}
+	return resp
 }
 
 // func RequestRepeater(SendRequest func(*ReqData, string) (map[string][]string, string), request *ReqData, data string, bf_journal_path string){

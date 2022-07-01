@@ -23,9 +23,9 @@ func ValueHeaderReplace(str string, value string, replace_symbol string) string{
 	return valuePurlReplace(str, value, replace_symbol)
 }
 
-func GetDataReader(request *ReqData, data string) *bytes.Buffer{
+func GetDataReader(request *Req, data string) *bytes.Buffer{
 	data_reader := bytes.NewBuffer([]byte(data))
-	switch request.Headers["Content-Type"] {
+	switch request.Headers_obj.Headers["Content-Type"][0] {
 		case "application/json":
 			data_reader = bytes.NewBuffer([]byte(data))
 		case "application/x-www-form-urlencoded":

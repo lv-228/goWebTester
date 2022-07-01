@@ -3,13 +3,24 @@ package http_funcs
 import(
 	"strings"
 	"net/http"
+	//"log"
 )
 
 type HeaderData struct{
 	Headers map[string][]string
 }
 
-func findHttpHeaderForReplace(headers map[string]string) (string, string) {
+func (h *HeaderData) CreateFromTextArea(headers string) *Replace{
+	h.Headers = ParseTextareaHeaders(headers)
+	elem, key := findHttpHeaderForReplace(h.Headers)
+	headerReplace := &Replace{}
+	if elem != "" && key != ""{
+		headerReplace.AppendString(elem)
+	}
+	return headerReplace
+}
+
+func findHttpHeaderForReplace(headers map[string][]string) (string, string) {
 	for key, elem := range headers{
 		find_header := strings.Index(elem, Var_simbol_data)
 		if find_header == -1{
@@ -21,7 +32,7 @@ func findHttpHeaderForReplace(headers map[string]string) (string, string) {
 	return "", ""
 }
 
-func ParseTextareaHeaders(textarea_data string) (map[string]string, string, string){
+func ParseTextareaHeaders(textarea_data string) map[string][]string{
 
 	header_value := map[int]string{}
 
@@ -35,7 +46,7 @@ func ParseTextareaHeaders(textarea_data string) (map[string]string, string, stri
 		textarea_data = textarea_data[end_string+3:]
 	}
 
-	answer := map[string]string{}
+	answer := map[string][]string{}
 	
 	for _, elem := range header_value{
 		delimeter := strings.Index(elem, ":")
@@ -44,9 +55,7 @@ func ParseTextareaHeaders(textarea_data string) (map[string]string, string, stri
 		answer[header] = value
 	}
 
-	elem, key := findHttpHeaderForReplace(answer)
-
-	return answer, elem, key
+	return answer
 
 }
 

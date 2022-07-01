@@ -1,8 +1,7 @@
-package server_ui
+package http_funcs
 
 import(
 	"strings"
-	"web_tester/http_funcs"
 	"strconv"
 	"log"
 	"errors"
@@ -24,19 +23,30 @@ func (r *Replace) FindReplacePosition(str string) int{
 }
 
 func (r *Replace) Create(str string, Values []string){
+	r.AppendString(str)
+	r.AppendValues(Values, false)
+}
+
+func (r *Replace) AppendString(str string){
 	r.ReplacePosition = r.FindReplacePosition(str)
 	r.ReplaceString = str
+}
+
+func (r *Replace) AppendValues(Values []string, create_range bool){
 	r.Values = Values
 	r.Len = len(r.Values)
+	if create_range == true {
+		r.CreateRange()
+	}
 }
 
 func (r *Replace) Itteration(json bool) (string, error){
 	if r.CurrentValuePos < r.Len{
-		answer := http_funcs.ValueHeaderReplace(r.ReplaceString, r.Values[r.CurrentValuePos], Var_simbol)
+		answer := ValueHeaderReplace(r.ReplaceString, r.Values[r.CurrentValuePos], Var_simbol)
 		r.CurrentValuePos++
 		return answer, nil
 	}
-	return http_funcs.ValueHeaderReplace(r.ReplaceString, r.Values[r.CurrentValuePos-1], Var_simbol), errors.New("Out of range") 
+	return ValueHeaderReplace(r.ReplaceString, r.Values[r.CurrentValuePos-1], Var_simbol), errors.New("Out of range") 
 }
 
 func (r *Replace) CreateRange(){

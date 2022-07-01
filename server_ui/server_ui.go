@@ -9,7 +9,7 @@ import(
 	"web_tester/http_funcs"
 	"web_tester/target"
 	"encoding/json"
-	"strings"
+	//"strings"
 	//"strconv"
 )
 
@@ -124,85 +124,96 @@ func sendRequestHandler(w http.ResponseWriter, r *http.Request, title string){
         log.Println("error:", err)
     }
 
-    headers_request, header_value, header_key := http_funcs.ParseTextareaHeaders(r.FormValue("list_headers"))
+    headerData := &http_funcs.HeaderData{}
+    headerReplace := headerData.CreateFromTextArea(r.FormValue("list_headers"))
 
-	request1 := &http_funcs.ReqData{
-		Req_type: r.FormValue("method"),
-		Url: conf.Target["host"] + r.FormValue("url"),
-		Headers: headers_request,
-	}
+    headerReplace.AppendValues([]string{r.FormValue("values")}, true)
 
-	headerReplace   := &Replace{}
-	bfReplace := &Replace{}
+    log.Println(headerReplace)
 
-	if header_key != ""{
-		// step, err := strconv.Atoi(r.FormValue("step"))
-		// if err != nil{
-		// 	log.Fatalln("Ошибка шага")
-		// }
+    request := &http_funcs.Req{
+    	Req_type: r.FormValue("method"),
+    	Url: r.FormValue("url"),
+    	Headers_obj: headerData,
+    }
 
-		headerReplace.Create(header_value, []string{r.FormValue("values")})
-		headerReplace.CreateRange()
+    headers, _ := request.SendAndGetResult(r.FormValue("data"))
 
-		
+    log.Fatalln(headers)
 
-		//log.Println(http_funcs.GetHtmlTagByNameAndClass(body, "p", "is-warning"))
-	}
-
-	if(r.FormValue("bf_journal") != ""){
-		bf_file, err := os.ReadFile(r.FormValue("bf_journal"))
-		if err != nil{
-			log.Fatalln(err)
-		}
-
-		words := strings.Fields(string(bf_file))
-
-		
-
-		bfReplace.Create(r.FormValue("data"), words)
-
-	// 	if request.Headers["Content-Type"] == "application/json"{
-	// 	for _, elem := range words{
-	// 		headers, _ := SendRequest(request, valueJsonReplace(data, elem, Var_simbol_data))
-	// 		log.Println(elem, headers)
-	// 		//log.Println(GetHtmlTagByNameAndClass(body, "p", ))
-	// 	}
-	// }	else if request.Headers["Content-Type"] == "application/x-www-form-urlencoded"{
-	// 	for _, elem := range words{
-	// 		headers, body := SendRequest(request, valuePurlReplace(data, elem, Var_simbol_data))
-	// 		log.Println(elem, headers)
-	// 		log.Println(GetHtmlTagByNameAndClass(body, "p", "is-warning"))
-	// 	}
+	// request1 := &http_funcs.ReqData{
+	// 	Req_type: r.FormValue("method"),
+	// 	Url: conf.Target["host"] + r.FormValue("url"),
+	// 	Headers: headers_request,
 	// }
+
+	// bfReplace := &Replace{}
+
+	// //if header_key != ""{
+	// 	// step, err := strconv.Atoi(r.FormValue("step"))
+	// 	// if err != nil{
+	// 	// 	log.Fatalln("Ошибка шага")
+	// 	// }
+
 		
-	}
 
-	for ;; {
-		str_bf, err_bf := bfReplace.Itteration(false)
-		str_head, err_head := headerReplace.Itteration(false)
+	// 	//log.Println(http_funcs.GetHtmlTagByNameAndClass(body, "p", "is-warning"))
+	// //}
 
-		if err_bf != nil && err_head != nil{
-			log.Fatalln("DATA END")
-		}
+	// if(r.FormValue("bf_journal") != ""){
+	// 	bf_file, err := os.ReadFile(r.FormValue("bf_journal"))
+	// 	if err != nil{
+	// 		log.Fatalln(err)
+	// 	}
 
-		headers_request[header_key] = str_head
-		request1.Headers = headers_request
-		headers, _ := http_funcs.SendRequest(request1, str_bf)
-		log.Println(headers_request, headers, str_bf)
-	}
+	// 	words := strings.Fields(string(bf_file))
 
-	_, body_response := http_funcs.SendRequest(request1, r.FormValue("data"))
+		
 
-	p := &Page{Title: title, Body: []byte(body_response)}
+	// 	bfReplace.Create(r.FormValue("data"), words)
 
-	files := []string{
-		html_folder + "req_resp/response.tmpl",
-	}
+	// // 	if request.Headers["Content-Type"] == "application/json"{
+	// // 	for _, elem := range words{
+	// // 		headers, _ := SendRequest(request, valueJsonReplace(data, elem, Var_simbol_data))
+	// // 		log.Println(elem, headers)
+	// // 		//log.Println(GetHtmlTagByNameAndClass(body, "p", ))
+	// // 	}
+	// // }	else if request.Headers["Content-Type"] == "application/x-www-form-urlencoded"{
+	// // 	for _, elem := range words{
+	// // 		headers, body := SendRequest(request, valuePurlReplace(data, elem, Var_simbol_data))
+	// // 		log.Println(elem, headers)
+	// // 		log.Println(GetHtmlTagByNameAndClass(body, "p", "is-warning"))
+	// // 	}
+	// // }
+		
+	// }
 
-	all_files := append(files, tmpl_files...)
-	templates := template.Must(template.ParseFiles(all_files...))
+	// for ;; {
+	// 	str_bf, err_bf := bfReplace.Itteration(false)
+	// 	str_head, err_head := headerReplace.Itteration(false)
 
-	renderTemplate(w, "response", p, templates)
+	// 	if err_bf != nil && err_head != nil{
+	// 		log.Fatalln("DATA END")
+	// 	}
+
+	// 	headers_request[header_key] = str_head
+	// 	request1.Headers = headers_request
+	// 	headers, _ := http_funcs.SendRequest(request1, str_bf)
+	// 	log.Println(headers_request, headers, str_bf)
+	// }
+
+	// _, body_response := http_funcs.SendRequest(request1, r.FormValue("data"))
+
+	// p := &Page{Title: title, Body: []byte(body_response)}
+
+	// files := []string{
+	// 	html_folder + "req_resp/response.tmpl",
+	// }
+
+	// all_files := append(files, tmpl_files...)
+	// templates := template.Must(template.ParseFiles(all_files...))
+
+	// renderTemplate(w, "response", p, templates)
 
 }
 
