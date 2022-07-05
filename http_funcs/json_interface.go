@@ -2,7 +2,7 @@ package http_funcs
 
 import(
 	"encoding/json"
-	//"log"
+	"log"
 	"os"
 )
 
@@ -56,4 +56,13 @@ func (j *JsonFile) GetJsonObject(filename string){
 	//CheckErrValue(err1, "Ошибка открытия файла!")
 	err2 := json.Unmarshal(jsonInFile, &j)
 	CheckErrValue(err2, "Ошибка дессериализации!")
+}
+
+func (j *JsonFile) JsonFileToByte(filename string) []byte{
+	j.GetJsonObject(filename)
+	return j.ToJson()
+}
+
+func (j *JsonFile) Test(){
+	log.Println("hello world!")
 }

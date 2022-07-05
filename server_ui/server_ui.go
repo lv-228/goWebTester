@@ -16,6 +16,7 @@ import(
 type Page struct {
 	Title string
 	Body []byte
+	JsonList *http_funcs.JsonFile
 	Headers map[string]string
 }
 
@@ -23,7 +24,7 @@ var conf target.Config
 
 var html_folder = "./server_ui/html/"
 
-var validPath = regexp.MustCompile("^/(brute_module|settings|req_resp|resp)/([a-zA-Z0-9]+)$")
+var validPath = regexp.MustCompile("^/(brute_module|settings|http_module|resp)/([a-zA-Z0-9]+)$")
 
 var tmpl_files = []string{
 	html_folder + "templates/base.layout.tmpl",
@@ -91,15 +92,16 @@ func settingsHandler(w http.ResponseWriter, r *http.Request, title string){
 	renderTemplate(w, "settings", p, templates)
 }
 
-func req_respHandler(w http.ResponseWriter, r *http.Request, title string){
-	p, err := loadPage("req_resp/" + title)
+func http_moduleHandler(w http.ResponseWriter, r *http.Request, title string){
+	p, err := loadPage("http_module/" + title)
 	if err != nil{
 		http.Redirect(w, r, "/main/", http.StatusFound)
 		return
 	}
 	files := []string{
-		html_folder + "req_resp/index.tmpl",
-		html_folder + "req_resp/request.tmpl",
+		html_folder + "http_module/index.tmpl",
+		html_folder + "http_module/request.tmpl",
+		html_folder + "http_module/list.tmpl",
 	}
 
 	all_files := append(files, tmpl_files...)
@@ -112,6 +114,13 @@ func req_respHandler(w http.ResponseWriter, r *http.Request, title string){
     }
 
 	p.Headers = conf.Http_user_headers
+
+	jsonFile := &http_funcs.JsonFile{}
+
+	jsonFile.GetJsonObject(http_funcs.GetYearMonthDayNow())
+
+	p.JsonList = jsonFile
+
 	renderTemplate(w, "index", p, templates)
 }
 
@@ -147,6 +156,8 @@ func sendRequestHandler(w http.ResponseWriter, r *http.Request, title string){
     jsonFile := &http_funcs.JsonFile{}
 
     jsonFile.SaveJsonFile(jsonHttpObject)
+
+    log.Println(jsonFile)
 
 	// request1 := &http_funcs.ReqData{
 	// 	Req_type: r.FormValue("method"),
@@ -227,7 +238,7 @@ func sendRequestHandler(w http.ResponseWriter, r *http.Request, title string){
 func StartUiServer(){
 	http.HandleFunc("/brute_module/", makeHandler(bruteHandler))
 	http.HandleFunc("/settings/", makeHandler(settingsHandler))
-	http.HandleFunc("/req_resp/", makeHandler(req_respHandler))
+	http.HandleFunc("/http_module/", makeHandler(http_moduleHandler))
 	http.HandleFunc("/resp/", makeHandler(sendRequestHandler))
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(html_folder + "static"))))
