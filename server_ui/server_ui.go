@@ -139,7 +139,14 @@ func sendRequestHandler(w http.ResponseWriter, r *http.Request, title string){
 
     response := request.SendAndGetResult(r.FormValue("data"))
 
-    http_funcs.SaveObjectInJsonFile(response)
+    jsonHttpObject := &http_funcs.HttpJsonObject{
+    	Request_obj: request,
+    	Response_obj: response,
+    }
+
+    jsonFile := &http_funcs.JsonFile{}
+
+    jsonFile.SaveJsonFile(jsonHttpObject)
 
 	// request1 := &http_funcs.ReqData{
 	// 	Req_type: r.FormValue("method"),

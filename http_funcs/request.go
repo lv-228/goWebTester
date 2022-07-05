@@ -7,6 +7,7 @@ import (
 	"compress/gzip"
 	"time"
 	"net/http/httptrace"
+	"encoding/json"
 	//"crypto/tls"
 )
 
@@ -76,6 +77,14 @@ func (r *Req) sendRequest(data string) *Resp{
 	my_response.Create(resp.StatusCode, bytes, GetRespHeaders(resp))
 
 	return my_response
+}
+
+func (r *Req) ToJson() []byte {
+	answer, err := json.Marshal(r)
+	if err != nil{
+		log.Fatalln("Json marshal error! Object: request")
+	}
+	return answer
 }
 
 var start, connect, dns, tlsHandshake time.Time

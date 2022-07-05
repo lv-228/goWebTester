@@ -3,11 +3,9 @@ package http_funcs
 import(
 	"time"
 	"os"
-	//"log"
+	"log"
 	"strconv"
 )
-
-var date_ddMMyyyy_layout = "21.01.2001"
 
 func SaveObjectInJsonFile(obj Save_to_json){
 	jsonString := obj.ToJson()
@@ -19,6 +17,9 @@ func GetYearMonthDayNow() string{
 	return strconv.Itoa(t.Year()) + "-" + t.Month().String() + "-" + strconv.Itoa(t.Day())
 }
 
-// func GetObjectFromJsonFile(filename string){
-	
-// }
+func CheckErrValue(err error, message string){
+	if err != nil{
+		log.Printf(message + " Err: %s", err)
+		os.Exit(1)
+	}
+}
