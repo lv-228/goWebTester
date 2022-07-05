@@ -21,13 +21,15 @@ func (h *HeaderData) CreateFromTextArea(headers string) *Replace{
 }
 
 func findHttpHeaderForReplace(headers map[string][]string) (string, string) {
-	for key, elem := range headers{
-		find_header := strings.Index(elem, Var_simbol_data)
-		if find_header == -1{
-			continue
+	for key, elems := range headers{
+		for _, elem := range elems{
+			find_header := strings.Index(elem, Var_simbol_data)
+			if find_header == -1{
+				continue
+			}
+			return elem, key
+			break
 		}
-		return elem, key
-		break
 	}
 	return "", ""
 }
@@ -52,7 +54,7 @@ func ParseTextareaHeaders(textarea_data string) map[string][]string{
 		delimeter := strings.Index(elem, ":")
 		header := elem[:delimeter]
 		value := elem[delimeter+2:]
-		answer[header] = value
+		answer[header] = append(answer[header], value)
 	}
 
 	return answer
@@ -81,7 +83,6 @@ func getPurlFieldData(purl string) map[string]string{
 	return answer
 }
 
-//Поменять потом на шаблон
 func GetRespHeaders(resp *http.Response) map[string][]string{
 	answer := map[string][]string{}
 	for i, elem := range resp.Header{

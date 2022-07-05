@@ -129,7 +129,7 @@ func sendRequestHandler(w http.ResponseWriter, r *http.Request, title string){
 
     headerReplace.AppendValues([]string{r.FormValue("values")}, true)
 
-    log.Println(headerReplace)
+    //log.Println(headerReplace)
 
     request := &http_funcs.Req{
     	Req_type: r.FormValue("method"),
@@ -137,9 +137,9 @@ func sendRequestHandler(w http.ResponseWriter, r *http.Request, title string){
     	Headers_obj: headerData,
     }
 
-    headers, _ := request.SendAndGetResult(r.FormValue("data"))
+    response := request.SendAndGetResult(r.FormValue("data"))
 
-    log.Fatalln(headers)
+    http_funcs.SaveObjectInJsonFile(response)
 
 	// request1 := &http_funcs.ReqData{
 	// 	Req_type: r.FormValue("method"),
