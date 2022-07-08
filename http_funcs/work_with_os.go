@@ -8,7 +8,7 @@ import(
 )
 
 func SaveObjectInJsonFile(obj Save_to_json){
-	jsonString := obj.ToJson()
+	jsonString := obj.ToByte()
 	os.WriteFile(GetYearMonthDayNow(), jsonString, os.ModePerm)
 }
 

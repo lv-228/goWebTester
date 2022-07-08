@@ -21,7 +21,7 @@ func (r *Resp) Create(StatusCode int, body []byte, Headers map[string][]string){
 	}
 }
 
-func (r *Resp) ToJson() []byte {
+func (r *Resp) ToByte() []byte {
 	answer, err := json.Marshal(r)
 	if err != nil{
 		log.Fatalln("Json marshal error! Object: response")

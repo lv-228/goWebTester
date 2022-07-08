@@ -16,7 +16,7 @@ import(
 type Page struct {
 	Title string
 	Body []byte
-	JsonList *http_funcs.JsonFile
+	JsonList map[string][]http_funcs.HttpJsonObject
 	Headers map[string]string
 }
 
@@ -119,7 +119,9 @@ func http_moduleHandler(w http.ResponseWriter, r *http.Request, title string){
 
 	jsonFile.GetJsonObject(http_funcs.GetYearMonthDayNow())
 
-	p.JsonList = jsonFile
+	p.JsonList = jsonFile.ToMap()
+
+	//log.Fatalln(test["HttpJsonObject_objs"][0].Request_obj)
 
 	renderTemplate(w, "index", p, templates)
 }

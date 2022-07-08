@@ -79,7 +79,7 @@ func (r *Req) sendRequest(data string) *Resp{
 	return my_response
 }
 
-func (r *Req) ToJson() []byte {
+func (r *Req) ToByte() []byte {
 	answer, err := json.Marshal(r)
 	if err != nil{
 		log.Fatalln("Json marshal error! Object: request")

@@ -2,12 +2,13 @@ package http_funcs
 
 import(
 	"encoding/json"
-	"log"
+	//"log"
 	"os"
 )
 
 type Save_to_json interface{
-	ToJson() []byte
+	ToByte() []byte
+	//ToMap()
 }
 
 type HttpJsonObject struct{
@@ -21,7 +22,7 @@ func (h *HttpJsonObject) CreateHttpJsonObject(request *Req, response *Resp){
 	h.Response_obj = response
 }
 
-func (h *HttpJsonObject) ToJson() []byte{
+func (h *HttpJsonObject) ToByte() []byte{
 	answer, err := json.Marshal(h)
 	CheckErrValue(err, "Json marshal error! Object: response")
 	return answer
@@ -31,7 +32,7 @@ type JsonFile struct{
 	HttpJsonObject_objs []HttpJsonObject
 }
 
-func (j *JsonFile) ToJson() []byte{
+func (j *JsonFile) ToByte() []byte{
 	answer, err := json.Marshal(j)
 	CheckErrValue(err, "Json marshal error! Object: response")
 	return answer
@@ -60,9 +61,12 @@ func (j *JsonFile) GetJsonObject(filename string){
 
 func (j *JsonFile) JsonFileToByte(filename string) []byte{
 	j.GetJsonObject(filename)
-	return j.ToJson()
+	return j.ToByte()
 }
 
-func (j *JsonFile) Test(){
-	log.Println("hello world!")
+func (j *JsonFile) ToMap() map[string][]HttpJsonObject {
+	answer := map[string][]HttpJsonObject{}
+	err := json.Unmarshal(j.ToByte(), &answer)
+	CheckErrValue(err, "Ошибка! Не получилось перевести файл в таблицу")
+	return answer
 }
