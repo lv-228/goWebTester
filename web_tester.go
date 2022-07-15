@@ -9,6 +9,8 @@ import (
 	//"web_tester/http_funcs"
 	"web_tester/server_ui"
 	"web_tester/target"
+	//"core/sql"
+	//"web_tester/internal/sqli"
 	//"encoding/json"
 )
 
@@ -46,7 +48,6 @@ func main(){
 	// log.Println(body)
 
 	server_ui.StartUiServer()
-
 
 
 	//resp := http_funcs.GetRequest(Conf.Target["host"] + Conf.Target["login_page"])

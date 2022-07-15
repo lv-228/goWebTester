@@ -8,7 +8,9 @@ import(
 	"regexp"
 	"web_tester/http_funcs"
 	"web_tester/target"
+	//"web_tester/internal/sqli"
 	"encoding/json"
+	"core/sql"
 	//"strings"
 	//"strconv"
 )
@@ -24,7 +26,7 @@ var conf target.Config
 
 var html_folder = "./server_ui/html/"
 
-var validPath = regexp.MustCompile("^/(brute_module|settings|http_module|resp)/([a-zA-Z0-9]+)$")
+var validPath = regexp.MustCompile("^/(brute_module|settings|http_module|resp|sqli)/([a-zA-Z0-9]+)$")
 
 var tmpl_files = []string{
 	html_folder + "templates/base.layout.tmpl",
@@ -237,11 +239,46 @@ func sendRequestHandler(w http.ResponseWriter, r *http.Request, title string){
 
 }
 
+func sqliHandler(w http.ResponseWriter, r *http.Request, title string){
+	if title == "test"{
+		sqliTest(title, w, r)
+	}
+}
+
+func sqliTest(title string, w http.ResponseWriter, r *http.Request){
+	p, err := loadPage("sqli_test/" + title)
+	if err != nil{
+		http.Redirect(w, r, "/main/", http.StatusFound)
+		return
+	}
+
+	sql_connection := &core_sql.Sql_db_connect{
+		User: "root",
+		Passwd: "",
+		Addr: "0.0.0.0:3306",
+		DBName: "sqli_test",
+	}
+
+	sql_connection.ConnectToDb()
+
+	log.Println(sql_connection.Connection.Query("SELECT * FROM user"))
+
+	files := []string{
+		html_folder + "sqli_test/test.tmpl",
+	}
+
+	all_files := append(files, tmpl_files...)
+
+	templates := template.Must(template.ParseFiles(all_files...))
+	renderTemplate(w, "test", p, templates)
+}
+
 func StartUiServer(){
 	http.HandleFunc("/brute_module/", makeHandler(bruteHandler))
 	http.HandleFunc("/settings/", makeHandler(settingsHandler))
 	http.HandleFunc("/http_module/", makeHandler(http_moduleHandler))
 	http.HandleFunc("/resp/", makeHandler(sendRequestHandler))
+	http.HandleFunc("/sqli/", makeHandler(sqliHandler))
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(html_folder + "static"))))
 
