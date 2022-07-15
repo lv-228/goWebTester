@@ -17,6 +17,7 @@ type Sql_db_connect struct{
 }
 
 func (s *Sql_db_connect) ConnectToDb(){
+
 	cfg := mysql.Config{
 		User: s.User,
 		Passwd: s.Passwd,
@@ -38,7 +39,7 @@ func (s *Sql_db_connect) ConnectToDb(){
 	log.Println("Connected!")
 }
 
-func (s *Sql_db_connect) Query(query string) (*sql.Rows, error){
+func (s *Sql_db_connect) Query(query string) ([][]string, error){
 	rows, err1 := s.Connection.Query(query)
 	if err1 != nil {
 		return nil, fmt.Errorf("error: %s", err1)
@@ -54,21 +55,22 @@ func (s *Sql_db_connect) Query(query string) (*sql.Rows, error){
 
 	test := make([]interface{}, len_columns)
 
-	answer := make([]string, len_columns)
+	boof := make([]string, len_columns)
+
+	answer := [][]string{}
 
 	for i := 0; i < len_columns; i++{
-		test[i] = &answer[i]
+		test[i] = &boof[i]
 	}
 
 	for rows.Next(){
 		if err := rows.Scan(test[:]...); err != nil{
 			return nil, fmt.Errorf("get result failure, err: %s", err)
 		}
+		answer = append(answer, boof)
 	}
 
-	log.Fatalln(answer)
-
-	return rows, nil
+	return answer, nil
 }
 
 func Test(){

@@ -6,7 +6,8 @@
  
 {{define "main"}}
 	<br>
-	<form>
-    	<input class="uk-input uk-form-blank uk-form-width-medium" type="text" placeholder="SQL input there">
+	<form method="POST" action="byerror">
+    	<input class="uk-input uk-form-blank uk-form-width-medium" type="text" name="id" placeholder="SQL by error">
+    	<button type="submit">Send</button>
 	</form>
 {{end}}

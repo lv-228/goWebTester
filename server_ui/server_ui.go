@@ -242,6 +242,8 @@ func sendRequestHandler(w http.ResponseWriter, r *http.Request, title string){
 func sqliHandler(w http.ResponseWriter, r *http.Request, title string){
 	if title == "test"{
 		sqliTest(title, w, r)
+	} else if title == "byerror"{
+		sqliByError(title, w, r)
 	}
 }
 
@@ -252,6 +254,17 @@ func sqliTest(title string, w http.ResponseWriter, r *http.Request){
 		return
 	}
 
+	files := []string{
+		html_folder + "sqli_test/test.tmpl",
+	}
+
+	all_files := append(files, tmpl_files...)
+
+	templates := template.Must(template.ParseFiles(all_files...))
+	renderTemplate(w, "test", p, templates)
+}
+
+func sqliByError(title string, w http.ResponseWriter, r *http.Request){
 	sql_connection := &core_sql.Sql_db_connect{
 		User: "root",
 		Passwd: "",
@@ -261,18 +274,26 @@ func sqliTest(title string, w http.ResponseWriter, r *http.Request){
 
 	sql_connection.ConnectToDb()
 
-	test1, test2 := sql_connection.Query("SELECT * FROM user")
+	q_string := "SELECT * FROM user WHERE id = '" + r.FormValue("id") + "'"
 
-	log.Println(test1, test2)
+	test1, _ := sql_connection.Query(q_string)
+
+	log.Println(test1)
+
+	p, err := loadPage("sqli_test/" + title)
+	if err != nil{
+		http.Redirect(w, r, "/main/", http.StatusFound)
+		return
+	}
 
 	files := []string{
-		html_folder + "sqli_test/test.tmpl",
+		html_folder + "sqli_test/byerror.tmpl",
 	}
 
 	all_files := append(files, tmpl_files...)
 
 	templates := template.Must(template.ParseFiles(all_files...))
-	renderTemplate(w, "test", p, templates)
+	renderTemplate(w, "byerror", p, templates)
 }
 
 func StartUiServer(){
