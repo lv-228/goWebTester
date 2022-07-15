@@ -4,7 +4,7 @@ import (
 	"github.com/go-sql-driver/mysql"
 	"database/sql"
 	"log"
-	//"fmt"
+	"fmt"
     //"os"
 )
 
@@ -38,8 +38,37 @@ func (s *Sql_db_connect) ConnectToDb(){
 	log.Println("Connected!")
 }
 
-func (s *Sql_db_connect) Query(query string){
-	rows, err := s.Connection.Query(query)
+func (s *Sql_db_connect) Query(query string) (*sql.Rows, error){
+	rows, err1 := s.Connection.Query(query)
+	if err1 != nil {
+		return nil, fmt.Errorf("error: %s", err1)
+	}
+	defer rows.Close()
+
+	columns, err2 := rows.Columns()
+	if err2 != nil{
+		return nil, fmt.Errorf("get columns failure")
+	}
+
+	len_columns := len(columns)
+
+	test := make([]interface{}, len_columns)
+
+	answer := make([]string, len_columns)
+
+	for i := 0; i < len_columns; i++{
+		test[i] = &answer[i]
+	}
+
+	for rows.Next(){
+		if err := rows.Scan(test[:]...); err != nil{
+			return nil, fmt.Errorf("get result failure, err: %s", err)
+		}
+	}
+
+	log.Fatalln(answer)
+
+	return rows, nil
 }
 
 func Test(){

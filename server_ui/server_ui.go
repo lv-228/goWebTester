@@ -261,7 +261,9 @@ func sqliTest(title string, w http.ResponseWriter, r *http.Request){
 
 	sql_connection.ConnectToDb()
 
-	log.Println(sql_connection.Connection.Query("SELECT * FROM user"))
+	test1, test2 := sql_connection.Query("SELECT * FROM user")
+
+	log.Println(test1, test2)
 
 	files := []string{
 		html_folder + "sqli_test/test.tmpl",
