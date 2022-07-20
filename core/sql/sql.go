@@ -73,6 +73,13 @@ func (s *Sql_db_connect) Query(query string) ([][]string, error){
 	return answer, nil
 }
 
+type Sql_values struct{
+	Comment []string
+	Quotes []string
+	Concat []string
+	SelectVersion string
+}
+
 func Test(){
 	log.Fatalln("sql")
 }

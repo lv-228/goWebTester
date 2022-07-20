@@ -8,7 +8,7 @@ import (
 	//"os"
 	"web_tester/web"
 	"web_tester/target"
-	//"core/sql"
+	//"core/http"
 	//"web_tester/internal/sqli"
 	//"encoding/json"
 )
@@ -45,6 +45,12 @@ func main(){
 	// _, body := http_funcs.SendRequest(request1)
 
 	// log.Println(body)
+
+	// test := core_http.Url{
+	// 	Value: "qwe=10&test=11",
+	// }
+
+	// test.GetRequestParams()
 
 	web_server.StartUiServer()
 

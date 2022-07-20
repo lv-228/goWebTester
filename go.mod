@@ -9,6 +9,7 @@ require (
 	core/data/json v0.0.0-00010101000000-000000000000 // indirect
 	core/data/replace v0.0.0-00010101000000-000000000000 // indirect
 	core/html v0.0.0-00010101000000-000000000000 // indirect
+	core/html/domobjs v0.0.0-00010101000000-000000000000 // indirect
 	core/http v0.0.0-00010101000000-000000000000 // indirect
 	core/os v0.0.0-00010101000000-000000000000 // indirect
 	core/sql v0.0.0-00010101000000-000000000000 // indirect
@@ -35,3 +36,5 @@ replace web_tester/web => ./web
 replace core/data/replace => ./core/data/replace_module
 
 replace core/data/json => ./core/data/json
+
+replace core/html/domobjs => ./core/html/DOMobjs
