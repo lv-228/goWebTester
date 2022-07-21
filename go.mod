@@ -14,6 +14,7 @@ require (
 	core/os v0.0.0-00010101000000-000000000000 // indirect
 	core/sql v0.0.0-00010101000000-000000000000 // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
+	internal/sqli/modules v0.0.0-00010101000000-000000000000 // indirect
 	web_tester/web v0.0.0-00010101000000-000000000000 // indirect
 )
 
@@ -38,3 +39,5 @@ replace core/data/replace => ./core/data/replace_module
 replace core/data/json => ./core/data/json
 
 replace core/html/domobjs => ./core/html/DOMobjs
+
+replace internal/sqli/modules => ./internal/sqli/modules

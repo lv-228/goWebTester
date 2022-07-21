@@ -74,6 +74,7 @@ func (j *JsonFile) ToMap() map[string][]HttpJsonObject {
 }
 
 func SaveObjectInJsonFile(obj Save_to_json){
+	jsonFolder := "http_json"
 	jsonString := obj.ToByte()
-	os.WriteFile(core_os.GetYearMonthDayNow(), jsonString, os.ModePerm)
+	os.WriteFile(jsonFolder + core_os.GetYearMonthDayNow(), jsonString, os.ModePerm)
 }

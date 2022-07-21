@@ -77,9 +77,10 @@ type Sql_values struct{
 	Comment []string
 	Quotes []string
 	Concat []string
-	SelectVersion string
+	SelectVersion []string
+	Default_db []string
 }
 
-func Test(){
-	log.Fatalln("sql")
+type Default_values_testing struct{
+	Numeric 
 }
