@@ -8,8 +8,9 @@ import (
 	//"os"
 	"web_tester/web"
 	"web_tester/target"
+	"internal/sqli/modules"
 	//"core/http"
-	//"web_tester/internal/sqli"
+	"internal/sqli/mysql"
 	//"encoding/json"
 )
 
@@ -51,6 +52,11 @@ func main(){
 	// }
 
 	// test.GetRequestParams()
+
+	mysql_interface := sqli_mysql.NewMysqlInterface()
+
+	test_url_module := &internals_sqli_modules.Test_url{}
+	test_url_module.RunUrlTest("http://localhost/index_action.php?id=1", mysql_interface)
 
 	web_server.StartUiServer()
 

@@ -79,8 +79,5 @@ type Sql_values struct{
 	Concat []string
 	SelectVersion []string
 	Default_db []string
-}
-
-type Default_values_testing struct{
-	Numeric 
+	Numeric_testing []string
 }
