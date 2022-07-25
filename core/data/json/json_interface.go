@@ -10,7 +10,6 @@ import(
 
 type Save_to_json interface{
 	ToByte() []byte
-	//ToMap()
 }
 
 type HttpJsonObject struct{

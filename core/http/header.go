@@ -4,7 +4,9 @@ import(
 	"strings"
 	"net/http"
 	"core/data/replace"
-	//"log"
+	"web_tester/target"
+	"encoding/json"
+	"log"
 )
 
 type HeaderData struct{
@@ -19,6 +21,23 @@ func (h *HeaderData) CreateFromTextArea(headers string) *core_data_replace.Repla
 		headerReplace.AppendString(elem)
 	}
 	return headerReplace
+}
+
+func (h *HeaderData) SetHeadersFromConfig(){
+	var conf target.Config
+
+	data := target.GetConfig()
+	err1 := json.Unmarshal(data, &conf)
+    if err1 != nil {
+        log.Println("error:", err1)
+    }
+
+    h.Headers = make(map[string][]string, len(conf.Http_user_headers))
+
+    for key_header, elem_header := range conf.Http_user_headers{
+    	header_values := strings.Split(elem_header, ",")
+    	h.Headers[key_header] = header_values
+    }
 }
 
 func findHttpHeaderForReplace(headers map[string][]string) (string, string) {

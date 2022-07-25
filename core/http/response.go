@@ -3,19 +3,20 @@ package core_http
 import(
 	"time"
 	"encoding/json"
+	"core/html"
 	"log"
 )
 
 type Resp struct {
 	StatusCode int
-	Body []byte
+	Body core_html.Body
 	Headers_obj *HeaderData
 	Ttf time.Duration
 }
 
 func (r *Resp) Create(StatusCode int, body []byte, Headers map[string][]string){
 	r.StatusCode = StatusCode
-	r.Body = body
+	r.Body.Value = body
 	r.Headers_obj = &HeaderData{
 		Headers: Headers,
 	}

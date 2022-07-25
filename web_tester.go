@@ -2,7 +2,7 @@ package main
 
 import (
 	"net/http"
-	//"log"
+	"log"
 	//"io/ioutil"
 	//"io"
 	//"os"
@@ -56,7 +56,9 @@ func main(){
 	mysql_interface := sqli_mysql.NewMysqlInterface()
 
 	test_url_module := &internals_sqli_modules.Test_url{}
-	test_url_module.RunUrlTest("http://localhost/index_action.php?id=1", mysql_interface)
+	test_url_module.RunUrlTest("http://localhost/index_action.php?id=1&test=2", mysql_interface)
+
+	log.Fatalln("END")
 
 	web_server.StartUiServer()
 

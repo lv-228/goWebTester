@@ -45,8 +45,9 @@ func NewMysql() Mysql{
 		"@@version",
 	}
 	mysql.Data.Quotes = []string{
-		//"\'",
+		"'",
 		"\"",
+		"`",
 	}
 
 	return mysql

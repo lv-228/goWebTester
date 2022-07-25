@@ -23,3 +23,7 @@ func (u *Url) GetRequestParams() map[string]string{
 
 	return answer
 }
+
+func (u *Url) GetUrlWithoutParams() string{
+	return u.Value[:strings.Index(u.Value, "?")]
+}
