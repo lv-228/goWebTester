@@ -2,7 +2,7 @@ package core_data_json
 
 import(
 	"encoding/json"
-	//"log"
+	"log"
 	"os"
 	"core/http"
 	"core/os"
@@ -73,7 +73,14 @@ func (j *JsonFile) ToMap() map[string][]HttpJsonObject {
 }
 
 func SaveObjectInJsonFile(obj Save_to_json){
-	jsonFolder := "http_json"
+	jsonFolder := "http_json/"
 	jsonString := obj.ToByte()
 	os.WriteFile(jsonFolder + core_os.GetYearMonthDayNow(), jsonString, os.ModePerm)
+}
+
+func SaveToJsonFile(data []byte, path string){
+	err := os.WriteFile(path + core_os.GetYearMonthDayNow() + ".json", data, os.ModePerm)
+	if err != nil{
+		log.Fatalln(err)
+	}
 }

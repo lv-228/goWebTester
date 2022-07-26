@@ -1,0 +1,76 @@
+{
+  "Elem": [
+    {
+      "Url": "http://localhost/index_action.php?str='",
+      "Status": 200,
+      "Body": "bool(false)\n",
+      "Ttf": 9033857
+    },
+    {
+      "Url": "http://localhost/index_action.php?str=''",
+      "Status": 200,
+      "Body": "object(PDOStatement)#2 (1) {\n  [\"queryString\"]=\u003e\n  string(32) \"SELECT * FROM user WHERE id = ''\"\n}\n",
+      "Ttf": 3428066
+    },
+    {
+      "Url": "http://localhost/index_action.php?str=\"",
+      "Status": 200,
+      "Body": "bool(false)\n",
+      "Ttf": 1887735
+    },
+    {
+      "Url": "http://localhost/index_action.php?str=\"\"",
+      "Status": 200,
+      "Body": "object(PDOStatement)#2 (1) {\n  [\"queryString\"]=\u003e\n  string(32) \"SELECT * FROM user WHERE id = \"\"\"\n}\n",
+      "Ttf": 7296725
+    },
+    {
+      "Url": "http://localhost/index_action.php?str=`",
+      "Status": 200,
+      "Body": "bool(false)\n",
+      "Ttf": 4651913
+    },
+    {
+      "Url": "http://localhost/index_action.php?str=``",
+      "Status": 200,
+      "Body": "bool(false)\n",
+      "Ttf": 3614898
+    },
+    {
+      "Url": "http://localhost/index_action.php?id='",
+      "Status": 200,
+      "Body": "bool(false)\n",
+      "Ttf": 14225231
+    },
+    {
+      "Url": "http://localhost/index_action.php?id=''",
+      "Status": 200,
+      "Body": "bool(false)\n",
+      "Ttf": 15369418
+    },
+    {
+      "Url": "http://localhost/index_action.php?id=\"",
+      "Status": 200,
+      "Body": "bool(false)\n",
+      "Ttf": 3626744
+    },
+    {
+      "Url": "http://localhost/index_action.php?id=\"\"",
+      "Status": 200,
+      "Body": "bool(false)\n",
+      "Ttf": 1886181
+    },
+    {
+      "Url": "http://localhost/index_action.php?id=`",
+      "Status": 200,
+      "Body": "bool(false)\n",
+      "Ttf": 3625690
+    },
+    {
+      "Url": "http://localhost/index_action.php?id=``",
+      "Status": 200,
+      "Body": "bool(false)\n",
+      "Ttf": 2873295
+    }
+  ]
+}

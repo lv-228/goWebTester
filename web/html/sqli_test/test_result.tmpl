@@ -1,5 +1,23 @@
 {{ define "test_result" }}
 
+<table class="uk-table uk-table-hover uk-table-divider">
+    <thead>
+        <tr>
+        	<th>Url</th>
+            <th>Status</th>
+            <th>Body</th>
+            <th>Ttf</th>
+        </tr>
+    </thead>
+    <tbody>
+{{ range $key, $value := .TestUrlResult.Elem }}
+	<tr>
+		<td>{{$value.Url}}</td>
+		<td>{{$value.Status}}</td>
+		<td>{{$value.Body}}</td>
+		<td>{{$value.Ttf}}</td>
+	</tr>
 
+{{end}}
 
 {{ end }}

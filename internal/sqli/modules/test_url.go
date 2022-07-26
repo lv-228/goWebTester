@@ -5,6 +5,9 @@ import (
 	"log"
 	"time"
 	"encoding/json"
+	"core/data/json"
+	"core/os"
+	"os"
 	//"web_tester/target"
 )
 
@@ -31,6 +34,12 @@ type SqliUrlTestJsonObject struct {
 	Ttf time.Duration
 }
 
+func (s *SqliUrlTestJsonObject) ToByte() []byte{
+	answer, err := json.Marshal(s)
+	core_os.CheckErrValue(err, "Json marshal error! Object: response")
+	return answer
+}
+
 func (s *SqliUrlTestJsonObject) GetFolderFromSave() string{
 	return "sqli/test_url"
 }
@@ -41,6 +50,19 @@ func (s *SqliUrlTestJsonObject) AppendData(url string, status int, body string, 
 	s.Status = status
 	s.Body = body
 	s.Ttf = ttf
+}
+
+type SqliUrlTestJsonObject_array struct {
+	Elem []SqliUrlTestJsonObject
+}
+
+func (sa *SqliUrlTestJsonObject_array) GetDataFromFile(path string){
+	jsonInFile, err1 := os.ReadFile(path)
+	if err1 != nil{
+		log.Fatalln(err1)
+	}
+	err2 := json.Unmarshal(jsonInFile, &sa)
+	core_os.CheckErrValue(err2, "Ошибка дессериализации!")
 }
 
 type Test_url struct{
@@ -73,12 +95,12 @@ func (t *Test_url) RunUrlTest(url string, db_obj Test_interface){
     }
 
     var JsonObject SqliUrlTestJsonObject
-    var JsonObjects []SqliUrlTestJsonObject
+    var JsonObjects SqliUrlTestJsonObject_array
 
     for key_url, _ := range req_params{
     	for _, elem_db_quote := range db_obj.GetQuoteSymbols(){
-    		JsonObjects = append(JsonObjects, *t.do("?" + key_url + "=" + elem_db_quote, &JsonObject, *request))
-			JsonObjects = append(JsonObjects, *t.do("?" + key_url + "=" + elem_db_quote + elem_db_quote, &JsonObject, *request))
+    		JsonObjects.Elem = append(JsonObjects.Elem, *t.do("?" + key_url + "=" + elem_db_quote, &JsonObject, *request))
+			JsonObjects.Elem = append(JsonObjects.Elem, *t.do("?" + key_url + "=" + elem_db_quote + elem_db_quote, &JsonObject, *request))
     	}
     }
 
@@ -87,5 +109,5 @@ func (t *Test_url) RunUrlTest(url string, db_obj Test_interface){
 		log.Fatalln(err)
 	}
 
-	log.Println(string(rawDataOut))
+	core_data_json.SaveToJsonFile(rawDataOut, "./modules_data/" + JsonObject.GetFolderFromSave() + "/")
 }
