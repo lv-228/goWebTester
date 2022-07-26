@@ -1,0 +1,16 @@
+{{template "base" .}}
+
+{{define "title"}}
+	SQLi Test Page
+{{end}}
+ 
+{{define "main"}}
+<ul class="uk-subnav uk-subnav-pill" uk-switcher>
+    <li><a href="#">Запуск теста</a></li>
+    <li><a href="#">Результат</a></li>
+</ul>
+<ul class="uk-switcher uk-margin">
+    <li>{{template "test_start" .}}</li>
+    <li>{{template "test_result" .}}</li>
+</ul>
+{{end}}

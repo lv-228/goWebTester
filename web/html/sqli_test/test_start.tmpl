@@ -1,0 +1,11 @@
+{{ define "test_start" }}
+
+<form method="POST" action="/sqli_start_module/testUrl">
+<legend class="uk-legend">Введите URL со всеми известными параметрами</legend>
+<div class="uk-margin">
+    <input class="uk-input" type="text" placeholder="URL?params=1" name="url">
+</div>
+<button type="submit">Send</button>
+</form>
+
+{{ end }}

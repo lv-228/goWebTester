@@ -11,8 +11,10 @@ import(
 	"encoding/json"
 	"core/sql"
 	"core/data/json"
-	"core/os"
+	//"core/os"
 	"core/http"
+	"internal/sqli/modules"
+	"internal/sqli/mysql"
 	//"strings"
 	//"strconv"
 )
@@ -28,7 +30,7 @@ var conf target.Config
 
 var html_folder = "./web/html/"
 
-var validPath = regexp.MustCompile("^/(brute_module|settings|http_module|resp|sqli)/([a-zA-Z0-9]+)$")
+var validPath = regexp.MustCompile("^/(brute_module|settings|http_module|resp|sqli_ui|sqli_start_module)/([a-zA-Z0-9]+)$")
 
 var tmpl_files = []string{
 	html_folder + "templates/base.layout.tmpl",
@@ -119,11 +121,11 @@ func http_moduleHandler(w http.ResponseWriter, r *http.Request, title string){
 
 	p.Headers = conf.Http_user_headers
 
-	jsonFile := &core_data_json.JsonFile{}
+	// jsonFile := &core_data_json.JsonFile{}
 
-	jsonFile.GetJsonObject(core_os.GetYearMonthDayNow())
+	// jsonFile.GetJsonObject(core_os.GetYearMonthDayNow())
 
-	p.JsonList = jsonFile.ToMap()
+	// p.JsonList = jsonFile.ToMap()
 
 	//log.Fatalln(test["HttpJsonObject_objs"][0].Request_obj)
 
@@ -241,15 +243,15 @@ func sendRequestHandler(w http.ResponseWriter, r *http.Request, title string){
 
 }
 
-func sqliHandler(w http.ResponseWriter, r *http.Request, title string){
-	if title == "test"{
-		sqliTest(title, w, r)
+func sqliUiHandler(w http.ResponseWriter, r *http.Request, title string){
+	if title == "testUrl"{
+		sqliUiTestUrl(title, w, r)
 	} else if title == "byerror"{
-		sqliByError(title, w, r)
+		sqliUiByError(title, w, r)
 	}
 }
 
-func sqliTest(title string, w http.ResponseWriter, r *http.Request){
+func sqliUiTestUrl(title string, w http.ResponseWriter, r *http.Request){
 	p, err := loadPage("sqli_test/" + title)
 	if err != nil{
 		http.Redirect(w, r, "/main/", http.StatusFound)
@@ -257,16 +259,18 @@ func sqliTest(title string, w http.ResponseWriter, r *http.Request){
 	}
 
 	files := []string{
-		html_folder + "sqli_test/test.tmpl",
+		html_folder + "sqli_test/testUrl.tmpl",
+		html_folder + "sqli_test/test_start.tmpl",
+		html_folder + "sqli_test/test_result.tmpl",
 	}
 
 	all_files := append(files, tmpl_files...)
 
 	templates := template.Must(template.ParseFiles(all_files...))
-	renderTemplate(w, "test", p, templates)
+	renderTemplate(w, "testUrl", p, templates)
 }
 
-func sqliByError(title string, w http.ResponseWriter, r *http.Request){
+func sqliUiByError(title string, w http.ResponseWriter, r *http.Request){
 	sql_connection := &core_sql.Sql_db_connect{
 		User: "root",
 		Passwd: "",
@@ -298,12 +302,25 @@ func sqliByError(title string, w http.ResponseWriter, r *http.Request){
 	renderTemplate(w, "byerror", p, templates)
 }
 
+func sqliStartModuleHandler(w http.ResponseWriter, r *http.Request, title string){
+	if title == "testUrl"{
+		sqliStartTesturl(title, w, r)
+	}
+}
+
+func sqliStartTesturl(title string, w http.ResponseWriter, r *http.Request){
+	test_module := internals_sqli_modules.Test_url{}
+	mysql_sqli_interface := sqli_mysql.NewMysqlInterface()
+	test_module.RunUrlTest(r.FormValue("url"), mysql_sqli_interface)
+}
+
 func StartUiServer(){
 	http.HandleFunc("/brute_module/", makeHandler(bruteHandler))
 	http.HandleFunc("/settings/", makeHandler(settingsHandler))
 	http.HandleFunc("/http_module/", makeHandler(http_moduleHandler))
 	http.HandleFunc("/resp/", makeHandler(sendRequestHandler))
-	http.HandleFunc("/sqli/", makeHandler(sqliHandler))
+	http.HandleFunc("/sqli_ui/", makeHandler(sqliUiHandler))
+	http.HandleFunc("/sqli_start_module/", makeHandler(sqliStartModuleHandler))
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(html_folder + "static"))))
 

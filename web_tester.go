@@ -2,15 +2,15 @@ package main
 
 import (
 	"net/http"
-	"log"
+	//"log"
 	//"io/ioutil"
 	//"io"
 	//"os"
 	"web_tester/web"
 	"web_tester/target"
-	"internal/sqli/modules"
+	//"internal/sqli/modules"
 	//"core/http"
-	"internal/sqli/mysql"
+	//"internal/sqli/mysql"
 	//"encoding/json"
 )
 
@@ -53,12 +53,12 @@ func main(){
 
 	// test.GetRequestParams()
 
-	mysql_interface := sqli_mysql.NewMysqlInterface()
+	// mysql_interface := sqli_mysql.NewMysqlInterface()
 
-	test_url_module := &internals_sqli_modules.Test_url{}
-	test_url_module.RunUrlTest("http://localhost/index_action.php?id=1&test=2", mysql_interface)
+	// test_url_module := &internals_sqli_modules.Test_url{}
+	// test_url_module.RunUrlTest("http://localhost/index_action.php?str=1&id=2", mysql_interface)
 
-	log.Fatalln("END")
+	// log.Fatalln("END")
 
 	web_server.StartUiServer()
 

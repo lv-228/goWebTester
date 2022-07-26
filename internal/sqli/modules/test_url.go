@@ -25,15 +25,19 @@ type Test_interface interface{
 
 type SqliUrlTestJsonObject struct {
 	Url string
-	GetParams map[string]string
+	//GetParams map[string]string
 	Status int
 	Body string
 	Ttf time.Duration
 }
 
-func (s *SqliUrlTestJsonObject) AppendData(url string, req_params map[string]string, status int, body string, ttf time.Duration){
+func (s *SqliUrlTestJsonObject) GetFolderFromSave() string{
+	return "sqli/test_url"
+}
+
+func (s *SqliUrlTestJsonObject) AppendData(url string, status int, body string, ttf time.Duration){
 	s.Url = url
-	s.GetParams = req_params
+	//s.GetParams = req_params
 	s.Status = status
 	s.Body = body
 	s.Ttf = ttf
@@ -45,10 +49,19 @@ type Test_url struct{
 	Numeric_test map[string]string
 }
 
+func (t *Test_url) do(value string, JsonObject *SqliUrlTestJsonObject, req core_http.Req) *SqliUrlTestJsonObject{
+	req.Url = t.Url.GetUrlWithoutParams() + value
+	answer := req.SendAndGetResult("qwe")
+	JsonObject.AppendData(req.Url, answer.StatusCode, answer.Body.ToString(), answer.Ttf)
+	return JsonObject
+}
+
 func (t *Test_url) RunUrlTest(url string, db_obj Test_interface){
 	t.Url = &core_http.Url{
 			url,
 		}
+
+	req_params := t.Url.GetRequestParams()
 
 	headers := &core_http.HeaderData{}
 
@@ -62,19 +75,17 @@ func (t *Test_url) RunUrlTest(url string, db_obj Test_interface){
     var JsonObject SqliUrlTestJsonObject
     var JsonObjects []SqliUrlTestJsonObject
 
-    req_params := t.Url.GetRequestParams()
+    for key_url, _ := range req_params{
+    	for _, elem_db_quote := range db_obj.GetQuoteSymbols(){
+    		JsonObjects = append(JsonObjects, *t.do("?" + key_url + "=" + elem_db_quote, &JsonObject, *request))
+			JsonObjects = append(JsonObjects, *t.do("?" + key_url + "=" + elem_db_quote + elem_db_quote, &JsonObject, *request))
+    	}
+    }
 
-	for key_url, _ := range req_params{
-		for _, elem_db_quote := range db_obj.GetQuoteSymbols(){
-			request.Url = t.Url.GetUrlWithoutParams() + "?" + key_url + "=" + elem_db_quote
-			answer := request.SendAndGetResult("qwe")
-			JsonObject.AppendData(request.Url, req_params, answer.StatusCode, answer.Body.ToString(), answer.Ttf)
-			JsonObjects = append(JsonObjects, JsonObject)
-		}
-	}
-	rawDataOut, err := json.MarshalIndent(&JsonObjects, "", "  ")
+    rawDataOut, err := json.MarshalIndent(&JsonObjects, "", "  ")
 	if err != nil{
 		log.Fatalln(err)
 	}
+
 	log.Println(string(rawDataOut))
 }
