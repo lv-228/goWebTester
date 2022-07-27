@@ -6,6 +6,7 @@ require web_tester/target v0.0.0-00010101000000-000000000000
 
 require (
 	core/data v0.0.0-00010101000000-000000000000 // indirect
+	core/data/http v0.0.0-00010101000000-000000000000 // indirect
 	core/data/json v0.0.0-00010101000000-000000000000 // indirect
 	core/data/replace v0.0.0-00010101000000-000000000000 // indirect
 	core/html v0.0.0-00010101000000-000000000000 // indirect
@@ -45,3 +46,5 @@ replace core/html/domobjs => ./core/html/DOMobjs
 replace internal/sqli/modules => ./internal/sqli/modules
 
 replace internal/sqli/mysql => ./internal/sqli/mysql
+
+replace core/data/http => ./core/data/http

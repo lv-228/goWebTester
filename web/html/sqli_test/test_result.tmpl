@@ -12,7 +12,7 @@
     <tbody>
 {{ range $key, $value := .TestUrlResult.Elem }}
 	<tr>
-		<td>{{$value.Url}}</td>
+		<td><a href="{{$value.Url}}">{{$value.Url}}</a></td>
 		<td>{{$value.Status}}</td>
 		<td>{{$value.Body}}</td>
 		<td>{{$value.Ttf}}</td>

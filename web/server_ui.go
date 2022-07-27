@@ -268,7 +268,7 @@ func sqliUiTestUrl(title string, w http.ResponseWriter, r *http.Request){
 	all_files := append(files, tmpl_files...)
 
 	JsonUrlTestObjects := internals_sqli_modules.SqliUrlTestJsonObject_array{}
-	JsonUrlTestObjects.GetDataFromFile("./modules_data/sqli/test_url/2022-July-26.json")
+	JsonUrlTestObjects.GetDataFromFile("./modules_data/sqli/test_url/2022-July-27.json")
 
 	p.TestUrlResult = JsonUrlTestObjects
 

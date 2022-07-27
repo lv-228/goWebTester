@@ -11,21 +11,6 @@ import (
 	//"web_tester/target"
 )
 
-type String_test interface {
-	GetCommentSymbols() []string
-	GetQuoteSymbols() []string
-	GetStringConcat() []string
-}
-
-type Numeric_test interface {
-	GetNumericTesting() []string
-}
-
-type Test_interface interface{
-	String_test
-	Numeric_test
-}
-
 type SqliUrlTestJsonObject struct {
 	Url string
 	//GetParams map[string]string
@@ -102,12 +87,18 @@ func (t *Test_url) RunUrlTest(url string, db_obj Test_interface){
     		JsonObjects.Elem = append(JsonObjects.Elem, *t.do("?" + key_url + "=" + elem_db_quote, &JsonObject, *request))
 			JsonObjects.Elem = append(JsonObjects.Elem, *t.do("?" + key_url + "=" + elem_db_quote + elem_db_quote, &JsonObject, *request))
     	}
+
+    	for _, elem_db_numeric_testring := range db_obj.GetNumericTesting(){
+    		JsonObjects.Elem = append(JsonObjects.Elem, *t.do("?" + key_url + "=" + elem_db_numeric_testring, &JsonObject, *request))
+    	}
     }
 
     rawDataOut, err := json.MarshalIndent(&JsonObjects, "", "  ")
 	if err != nil{
 		log.Fatalln(err)
 	}
+
+	log.Println(string(rawDataOut))
 
 	core_data_json.SaveToJsonFile(rawDataOut, "./modules_data/" + JsonObject.GetFolderFromSave() + "/")
 }

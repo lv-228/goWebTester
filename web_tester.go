@@ -2,7 +2,7 @@ package main
 
 import (
 	"net/http"
-	//"log"
+	"log"
 	//"io/ioutil"
 	//"io"
 	//"os"
@@ -10,6 +10,8 @@ import (
 	"web_tester/target"
 	//"internal/sqli/modules"
 	//"core/http"
+	"core/data/http"
+	"core/html/domobjs"
 	//"internal/sqli/mysql"
 	//"encoding/json"
 )
@@ -57,6 +59,11 @@ func main(){
 
 	// test_url_module := &internals_sqli_modules.Test_url{}
 	// test_url_module.RunUrlTest("http://localhost/index_action.php?str=1&id=2", mysql_interface)
+
+	// dob := core_html_domobjs.NewInput("test", "test")
+
+	// test := core_data_http_types.Obj{}
+	// test.EncodeData(dob)
 
 	// log.Fatalln("END")
 

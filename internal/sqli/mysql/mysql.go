@@ -30,14 +30,15 @@ func (m *Mysql) GetDefaultDb() []string {
 }
 
 func (m *Mysql) GetNumericTesting() []string {
-	return m.Data.Default_db
+	return m.Data.Numeric_testing
 }
 
 func NewMysql() Mysql{
 	mysql := Mysql{}
 	mysql.Data.Comment = []string{
 		"#", 
-		"--", 
+		"-- -",
+		"`",
 		"/*", 
 		"*/",
 	}
@@ -47,7 +48,15 @@ func NewMysql() Mysql{
 	mysql.Data.Quotes = []string{
 		"'",
 		"\"",
-		"`",
+	}
+	mysql.Data.Numeric_testing = []string{
+		"AND 1",
+		"AND 0",
+		"AND true",
+		"AND false",
+		"1-false",
+		"1-true",
+		"1*56",
 	}
 
 	return mysql
