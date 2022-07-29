@@ -312,6 +312,9 @@ func sqliStartModuleHandler(w http.ResponseWriter, r *http.Request, title string
 	if title == "testUrl"{
 		sqliStartTesturl(title, w, r)
 	}
+	// }else if title == "testPost"{
+	// 	sqliStartTesturl(title, w, r)
+	// }
 }
 
 func sqliStartTesturl(title string, w http.ResponseWriter, r *http.Request){
@@ -320,6 +323,12 @@ func sqliStartTesturl(title string, w http.ResponseWriter, r *http.Request){
 	test_module.RunUrlTest(r.FormValue("url"), mysql_sqli_interface)
 
 }
+
+// func sqliStartTestPost(title string, w http.ResponseWriter, r *http.Request){
+// 	test_module := internals_sqli_modules.Test_input{}
+// 	mysql_sqli_interface := sqli_mysql.NewMysqlInterface()
+// 	test_module.RunUrlTest(r.FormValue("url"), mysql_sqli_interface)
+// }
 
 func StartUiServer(){
 	http.HandleFunc("/brute_module/", makeHandler(bruteHandler))

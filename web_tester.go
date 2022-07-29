@@ -8,10 +8,10 @@ import (
 	//"os"
 	"web_tester/web"
 	"web_tester/target"
-	//"internal/sqli/modules"
+	"internal/sqli/modules"
 	//"core/http"
-	"core/data/http"
-	"core/html/domobjs"
+	//"core/data/http"
+	//"core/html/domobjs"
 	//"internal/sqli/mysql"
 	//"encoding/json"
 )
@@ -62,10 +62,11 @@ func main(){
 
 	// dob := core_html_domobjs.NewInput("test", "test")
 
-	// test := core_data_http_types.Obj{}
-	// test.EncodeData(dob)
+	test_input_module := internals_sqli_modules.Test_input{}
 
-	// log.Fatalln("END")
+	test_input_module.RunPostTest("qwerty", "1234")
+
+	log.Fatalln("END")
 
 	web_server.StartUiServer()
 
