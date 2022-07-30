@@ -69,8 +69,7 @@ func (r *Replace) CreateRange(){
 }
 
 type ReplaceS struct{
-	ReplaceString string
-	ReplacePositionS []int
+	Keys []string
 	Values []string
 	DefaultValues []string
 	Len int
@@ -78,50 +77,66 @@ type ReplaceS struct{
 	ResultStr string
 }
 
-func NewReplaceS(str string, Values []string, DefaultValues []string) ReplaceS{
+func NewReplaceS(keys []string, Values []string, DefaultValues []string) ReplaceS{
 	if len(Values) != len(DefaultValues){
 		errors.New("Количество значений для замены должно совпадать со значениями для замены по умолчанию!")
 	}
 	new_replaces := ReplaceS{}
-	new_replaces.ReplaceString = str
-	new_replaces.ReplacePositionS = new_replaces.FindReplacePositionS(str)
+	new_replaces.Keys = keys
 	new_replaces.Values = Values
 	new_replaces.DefaultValues = DefaultValues
-	new_replaces.Len = len(str)
 	new_replaces.CurrentValuePos = 0
 	return new_replaces
 }
 
-func (r *ReplaceS) FindReplacePositionS(str string) []int{
+func (r *ReplaceS) FindReplacePositionS(str string){
 	find_simbol := strings.Index(str, Var_simbol)
 	var answer []int
 	if find_simbol == -1{
-		return answer
+		return
 	}
 	answer = append(answer, find_simbol)
-	new_str := str[find_simbol+1:]
+	new_str := str[:find_simbol] + "?" + str[find_simbol+2:] 
 	r.FindReplacePositionS(new_str)
+	return
+}
+
+func (r *ReplaceS) ValuesStrings() map[int][]string{
+	answer := make(map[int][]string, len(r.Keys))
+	for i := 0; i < len(r.Keys); i++{
+		for j := 0; j < len(r.Values); j++{
+			answer[i] = append(answer[i], r.Keys[i] + "=" + r.Values[j])
+		}
+	}
 	return answer
 }
 
-func (r *ReplaceS) valuePurlReplace(){
-	r.ResultStr = r.ReplaceString[:r.ReplacePositionS[r.CurrentValuePos]] + r.Values[r.CurrentValuePos] + r.ReplaceString[r.ReplacePositionS[r.CurrentValuePos]+2:]
-	r.CurrentValuePos++
+func (r *ReplaceS) DefaultStrings() []string{
+	var answer []string
+	for i := 0; i < len(r.Keys); i++{
+		answer = append(answer, r.Keys[i] + "=" + r.DefaultValues[i])
+	}
+	return answer
 }
 
-func (r *ReplaceS) valueJsonReplace(){
-	r.ResultStr = r.ReplaceString[r.ReplacePositionS[r.CurrentValuePos]:] + r.Values[r.CurrentValuePos] + r.ReplaceString[:r.ReplacePositionS[r.CurrentValuePos] + len(r.Values[r.CurrentValuePos])]
-	r.CurrentValuePos++
-}
-
-func (r *ReplaceS) Itteration(json bool){
-	if r.CurrentValuePos < r.Len{
-		if json == true{
-			r.valueJsonReplace()
-		} else if json == false{
-			r.valuePurlReplace()
+func (r *ReplaceS) GenerateStrings(){
+	default_str := r.DefaultStrings()
+	values_str := r.ValuesStrings()
+	boof := ""
+	var answer []string
+	for i := 0; i < len(default_str); i++{
+		for j := 0; j < len(values_str[i]); j++{
+			boof += values_str[i][j]
+			for g := 0; g < len(default_str); g++{
+				if g != i{
+					boof += "&" + default_str[g]
+				}
+			}
+			answer = append(answer, boof)
+			boof = ""
 		}
 	}
+	log.Println(answer)
 }
 
 func valueJsonReplace(str string, value string, replace_symbol string) string{

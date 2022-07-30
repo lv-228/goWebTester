@@ -29,11 +29,11 @@ func (t *Test_input) RunPostTest(url string, params string){
 			url,
 		}
 
-	test_data := core_data_replace.NewReplaceS("test1=¡&test2=¡&test3=¡", []string{"abc", "2", "3"}, []string{"4", "5", "6"})
+	test_data := core_data_replace.NewReplaceS([]string{"test1", "test2", "test3"}, []string{"abc", "2", "3"}, []string{"4", "5", "6"})
 
-	test_data.Itteration(false)
+	test_data.GenerateStrings()
 
-	log.Println(test_data.ResultStr)
+	//log.Println(test_data.ResultStr)
 
 	// headers := &core_http.HeaderData{}
 
