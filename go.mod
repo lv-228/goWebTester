@@ -12,10 +12,12 @@ require (
 	core/html v0.0.0-00010101000000-000000000000 // indirect
 	core/html/domobjs v0.0.0-00010101000000-000000000000 // indirect
 	core/http v0.0.0-00010101000000-000000000000 // indirect
+	core/nosql v0.0.0-00010101000000-000000000000 // indirect
 	core/os v0.0.0-00010101000000-000000000000 // indirect
 	core/sql v0.0.0-00010101000000-000000000000 // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	internal/sqli/modules v0.0.0-00010101000000-000000000000 // indirect
+	internal/sqli/modules/test v0.0.0-00010101000000-000000000000 // indirect
 	internal/sqli/mysql v0.0.0-00010101000000-000000000000 // indirect
 	web_tester/internal/sqli v0.0.0-00010101000000-000000000000 // indirect
 	web_tester/web v0.0.0-00010101000000-000000000000 // indirect
@@ -48,3 +50,7 @@ replace internal/sqli/modules => ./internal/sqli/modules
 replace internal/sqli/mysql => ./internal/sqli/mysql
 
 replace core/data/http => ./core/data/http
+
+replace internal/sqli/modules/test => ./internal/sqli/modules/test_module
+
+replace core/nosql => ./core/no_sql

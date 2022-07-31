@@ -1,4 +1,4 @@
-package internals_sqli_modules
+package internals_sqli_modules_test
 
 type String_test interface {
 	GetCommentSymbols() []string
@@ -11,6 +11,7 @@ type Numeric_test interface {
 }
 
 type Test_interface interface{
+	GetName() string
 	String_test
 	Numeric_test
 }

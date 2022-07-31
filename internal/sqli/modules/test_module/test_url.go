@@ -1,4 +1,4 @@
-package internals_sqli_modules
+package internals_sqli_modules_test
 
 import (
 	"core/http"

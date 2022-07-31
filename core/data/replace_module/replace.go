@@ -119,7 +119,7 @@ func (r *ReplaceS) DefaultStrings() []string{
 	return answer
 }
 
-func (r *ReplaceS) GenerateStrings(){
+func (r *ReplaceS) GenerateStrings() []string{
 	default_str := r.DefaultStrings()
 	values_str := r.ValuesStrings()
 	boof := ""
@@ -136,7 +136,7 @@ func (r *ReplaceS) GenerateStrings(){
 			boof = ""
 		}
 	}
-	log.Println(answer)
+	return answer
 }
 
 func valueJsonReplace(str string, value string, replace_symbol string) string{

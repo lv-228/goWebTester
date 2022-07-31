@@ -25,5 +25,10 @@ func (u *Url) GetRequestParams() map[string]string{
 }
 
 func (u *Url) GetUrlWithoutParams() string{
-	return u.Value[:strings.Index(u.Value, "?")]
+	idx := strings.Index(u.Value, "?")
+	if idx == -1 {
+		return u.Value
+	} else {
+		return u.Value[:strings.Index(u.Value, "?")]
+	}
 }

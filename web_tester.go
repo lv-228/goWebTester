@@ -8,11 +8,11 @@ import (
 	//"os"
 	"web_tester/web"
 	"web_tester/target"
-	"internal/sqli/modules"
+	"internal/sqli/modules/test"
 	//"core/http"
 	//"core/data/http"
 	//"core/html/domobjs"
-	//"internal/sqli/mysql"
+	"internal/sqli/mysql"
 	//"encoding/json"
 )
 
@@ -55,16 +55,16 @@ func main(){
 
 	// test.GetRequestParams()
 
-	// mysql_interface := sqli_mysql.NewMysqlInterface()
+	mysql_interface := sqli_mysql.NewMysqlInterface()
 
 	// test_url_module := &internals_sqli_modules.Test_url{}
 	// test_url_module.RunUrlTest("http://localhost/index_action.php?str=1&id=2", mysql_interface)
 
 	// dob := core_html_domobjs.NewInput("test", "test")
 
-	test_input_module := internals_sqli_modules.Test_input{}
+	test_input_module := internals_sqli_modules_test.Test_input{}
 
-	test_input_module.RunPostTest("qwerty", "1234")
+	test_input_module.RunPostTest("http://localhost/index_action.php", mysql_interface)
 
 	log.Fatalln("END")
 

@@ -13,7 +13,7 @@ import(
 	"core/data/json"
 	//"core/os"
 	"core/http"
-	"internal/sqli/modules"
+	"internal/sqli/modules/test"
 	"internal/sqli/mysql"
 	//"strings"
 	//"strconv"
@@ -23,7 +23,7 @@ type Page struct {
 	Title string
 	Body []byte
 	JsonList map[string][]core_data_json.HttpJsonObject
-	TestUrlResult internals_sqli_modules.SqliUrlTestJsonObject_array
+	TestUrlResult internals_sqli_modules_test.SqliUrlTestJsonObject_array
 	Headers map[string]string
 }
 
@@ -267,7 +267,7 @@ func sqliUiTestUrl(title string, w http.ResponseWriter, r *http.Request){
 
 	all_files := append(files, tmpl_files...)
 
-	JsonUrlTestObjects := internals_sqli_modules.SqliUrlTestJsonObject_array{}
+	JsonUrlTestObjects := internals_sqli_modules_test.SqliUrlTestJsonObject_array{}
 	JsonUrlTestObjects.GetDataFromFile("./modules_data/sqli/test_url/2022-July-27.json")
 
 	p.TestUrlResult = JsonUrlTestObjects
@@ -318,7 +318,7 @@ func sqliStartModuleHandler(w http.ResponseWriter, r *http.Request, title string
 }
 
 func sqliStartTesturl(title string, w http.ResponseWriter, r *http.Request){
-	test_module := internals_sqli_modules.Test_url{}
+	test_module := internals_sqli_modules_test.Test_url{}
 	mysql_sqli_interface := sqli_mysql.NewMysqlInterface()
 	test_module.RunUrlTest(r.FormValue("url"), mysql_sqli_interface)
 

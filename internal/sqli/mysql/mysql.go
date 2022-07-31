@@ -2,11 +2,16 @@ package sqli_mysql
 
 import (
 	"core/sql"
-	"internal/sqli/modules"
+	"internal/sqli/modules/test"
 )
 
 type Mysql struct{
+	Name string
 	Data core_sql.Sql_values
+}
+
+func (m *Mysql) GetName() string{
+	return "MySQL"
 }
 
 func (m *Mysql) GetCommentSymbols() []string {
@@ -56,15 +61,15 @@ func NewMysql() Mysql{
 		"AND false",
 		"1-false",
 		"1-true",
-		"1*56",
+		"1*1",
 	}
 
 	return mysql
 }
 
-func NewMysqlInterface() internals_sqli_modules.Test_interface{
+func NewMysqlInterface() internals_sqli_modules_test.Test_interface{
 	mysql := NewMysql()
-	var my_interface internals_sqli_modules.Test_interface
+	var my_interface internals_sqli_modules_test.Test_interface
 	my_interface = &mysql
 	return my_interface
 }
