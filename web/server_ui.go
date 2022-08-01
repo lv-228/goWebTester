@@ -249,7 +249,13 @@ func sqliUiHandler(w http.ResponseWriter, r *http.Request, title string){
 		sqliUiTestUrl(title, w, r)
 	} else if title == "byerror"{
 		sqliUiByError(title, w, r)
+	} else if title == "viewBodyResult"{
+		sqliViewBodyResult(title, w, r)
 	}
+}
+
+func sqliViewBodyResult(title string, w http.ResponseWriter, r *http.Request){
+	
 }
 
 func sqliUiTestUrl(title string, w http.ResponseWriter, r *http.Request){
