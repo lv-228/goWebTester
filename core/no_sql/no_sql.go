@@ -4,6 +4,7 @@ import(
 	"core/http"
 	"log"
 	"encoding/json"
+	"strconv"
 )
 
 type Couch_db struct{
@@ -16,12 +17,12 @@ func NewCouchDB(url string, db string) Couch_db{
 	new := Couch_db{}
 	new.Url = url
 	new.Db = db
-	new.GetUUIDUrl = "/_uuids?count=1"
+	new.GetUUIDUrl = "/_uuids?count="
 	return new
 }
 
-func (c *Couch_db) GetUUID(req *core_http.Req) string{
-	req.Url = c.Url + c.GetUUIDUrl
+func (c *Couch_db) GetUUIDs(req *core_http.Req, num int) string{
+	req.Url = c.Url + c.GetUUIDUrl + strconv.Itoa(num)
 	answer := req.SendAndGetResult("")
 	return answer.Body.ToString()
 }

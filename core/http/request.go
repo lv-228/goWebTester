@@ -14,7 +14,7 @@ import (
 )
 
 type Req struct{
-	Req_type, Url string
+	Req_type, Url, Data_type string
 	Headers_obj *HeaderData
 }
 
@@ -41,6 +41,12 @@ func (r *Req) sendRequest(data string) *Resp{
 		for _, elem := range elems{
 			req.Header.Set(i, elem)
 		}
+	}
+
+	if r.Data_type == "url"{
+		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	} else if r.Data_type == "json"{
+		req.Header.Set("Content-Type", "application/json")
 	}
 
 	trace := GetMetricsObject()

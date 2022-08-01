@@ -44,10 +44,11 @@ func (t *Test_input) RunPostTest(url string, db_obj Test_interface){
 	request := &core_http.Req{
     	Req_type: "GET",
     	Headers_obj: headers,
+    	Data_type: "url",
     }
 
     couch_db := core_nosql.NewCouchDB("http://admin:123456@localhost:5984", "module_history")
-    couch_uuid := couch_db.GetUUID(request)
+    couch_uuid := couch_db.GetUUIDs(request, 1)
 	cuuid := core_nosql.NewCouchDBUuidResult([]byte(couch_uuid))
     test_module_json := NewTestModuleJsonPut(cuuid.Uuids[0], db_obj.GetName(), "test_input", time.Now().UTC())
 	test_module_json.Put(request, couch_db)
@@ -64,19 +65,18 @@ func (t *Test_input) RunPostTest(url string, db_obj Test_interface){
     	JsonObjects.Elem = append(JsonObjects.Elem, *t.do(string, &JsonObject, *request))
     }
 
-    rawDataOut, err := json.MarshalIndent(&JsonObjects, "", "  ")
-	if err != nil{
-		log.Fatalln(err)
-	}
+    JsonObjects.Put(cuuid.Uuids[0], request, couch_db)
 
-	log.Println(string(rawDataOut))
+ //    rawDataOut, err := json.MarshalIndent(&JsonObjects, "", "  ")
+	// if err != nil{
+	// 	log.Fatalln(err)
+	// }
 
 	//core_data_json.SaveToJsonFile(rawDataOut, "./modules_data/" + JsonObject.GetFolderFromSave() + "/")
 }
 
 type SqliPostTestJsonObject struct {
 	Url string
-	Params string
 	Status int
 	Body string
 	Payload string
@@ -105,9 +105,17 @@ type SqliPostTestJsonObject_array struct{
 	Elem []SqliPostTestJsonObject
 }
 
-// func (sq *SqliPostTestJsonObject_array) Put(){
-	
-// }
+func (sq *SqliPostTestJsonObject_array) Put(id_module string, req *core_http.Req, c core_nosql.Couch_db){
+	req.Data_type = "json"
+	req.Req_type = "GET"
+	couch_uuid := c.GetUUIDs(req, len(sq.Elem))
+	c.Db = "module_result"
+	uuid := core_nosql.NewCouchDBUuidResult([]byte(couch_uuid))
+	for key, value := range sq.Elem{
+		result_test_put := NewResultTestModuleJsonPut(&uuid.Uuids[key], &id_module, &value)
+		log.Println(result_test_put.Put(req, c))
+	}
+}
 
 func (sa *SqliPostTestJsonObject_array) GetDataFromFile(path string){
 	jsonInFile, err1 := os.ReadFile(path)
