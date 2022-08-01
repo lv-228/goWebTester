@@ -1,10 +1,12 @@
 package core_data_json
 
 import(
+	"net/url"
 	"encoding/json"
 	"log"
 	"os"
 	"core/http"
+	"strings"
 	"core/os"
 )
 
@@ -83,4 +85,17 @@ func SaveToJsonFile(data []byte, path string){
 	if err != nil{
 		log.Fatalln(err)
 	}
+}
+
+func ToJSON(str string) string {
+	m, err := url.ParseQuery(str)
+	if err != nil {
+		log.Fatal(err)
+	}
+	js, err := json.Marshal(m)
+	if err != nil {
+		log.Fatal(err)
+	}
+		
+	return strings.ReplaceAll(string(js), ",", ", ")
 }

@@ -46,15 +46,15 @@ func (t *Test_input) RunPostTest(url string, db_obj Test_interface){
     	Headers_obj: headers,
     }
 
-    couch_db := core_nosql.NewCouchDB("http://localhost:5984")
-    couch_db.GetUUID(request)
+    couch_db := core_nosql.NewCouchDB("http://admin:123456@localhost:5984", "module_history")
+    couch_uuid := couch_db.GetUUID(request)
+	cuuid := core_nosql.NewCouchDBUuidResult([]byte(couch_uuid))
+    test_module_json := NewTestModuleJsonPut(cuuid.Uuids[0], db_obj.GetName(), "test_input", time.Now().UTC())
+	test_module_json.Put(request, couch_db)
 
     var JsonObject SqliPostTestJsonObject
     var JsonObjects SqliPostTestJsonObject_array
-
-	module_json := NewLogObj(db_obj.GetName(), "test_module", time.Now().UTC())
-
-	log.Println(module_json)
+	//log.Println(couch_db.GetByUUID(request, "a6b6047e16a7c3bfe9b2bc4c9e007749"))
 
     for _, string := range test_string_strings{
     	JsonObjects.Elem = append(JsonObjects.Elem, *t.do(string, &JsonObject, *request))
@@ -104,6 +104,10 @@ func (s *SqliPostTestJsonObject) GetFolderFromSave() string{
 type SqliPostTestJsonObject_array struct{
 	Elem []SqliPostTestJsonObject
 }
+
+// func (sq *SqliPostTestJsonObject_array) Put(){
+	
+// }
 
 func (sa *SqliPostTestJsonObject_array) GetDataFromFile(path string){
 	jsonInFile, err1 := os.ReadFile(path)

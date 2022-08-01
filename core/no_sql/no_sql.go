@@ -3,22 +3,53 @@ package core_nosql
 import(
 	"core/http"
 	"log"
+	"encoding/json"
 )
 
-type couch_db struct{
+type Couch_db struct{
 	Url string
 	GetUUIDUrl string
+	Db string
 }
 
-func NewCouchDB(url string) couch_db{
-	new := couch_db{}
+func NewCouchDB(url string, db string) Couch_db{
+	new := Couch_db{}
 	new.Url = url
+	new.Db = db
 	new.GetUUIDUrl = "/_uuids?count=1"
 	return new
 }
 
-func (c *couch_db) GetUUID(req *core_http.Req){
+func (c *Couch_db) GetUUID(req *core_http.Req) string{
 	req.Url = c.Url + c.GetUUIDUrl
 	answer := req.SendAndGetResult("")
-	log.Fatalln(answer.Body.ToString())
+	return answer.Body.ToString()
+}
+
+func (c *Couch_db) GetByUUID(req *core_http.Req, id string) string{
+	req.Url = c.Url + "/" + c.Db + "/" + id + "?confilcts=true"
+	answer := req.SendAndGetResult("")
+	return answer.Body.ToString()
+}
+
+type Couch_db_default_fields struct{
+	Id string `json:"_id"`
+	Rev string `json:"_rev"`
+}
+
+type Couch_db_uuid_result struct{
+	Uuids []string
+}
+
+func NewCouchDBUuidResult(b []byte) Couch_db_uuid_result{
+	new := Couch_db_uuid_result{}
+	err := json.Unmarshal(b, &new)
+	if err != nil{
+		log.Fatalln(err)
+	}
+	return new
+}
+
+func AddIdValueInUrlEncode(str string, id string) string{
+	return str + "&_id=" + id
 }
