@@ -33,6 +33,18 @@ func (c *Couch_db) GetByUUID(req *core_http.Req, id string) string{
 	return answer.Body.ToString()
 }
 
+func (c *Couch_db) GetModulesByType(req *core_http.Req, t string) string{
+	req.Url = c.Url + "/module_history/_design/modules/_view/byType?key=\"" + t + "\""
+	answer := req.SendAndGetResult("")
+	return answer.Body.ToString()
+}
+
+func (c *Couch_db) GetResultsByModuleId(req *core_http.Req, id string) string{
+	req.Url = c.Url + "/module_result/_design/result/_view/byIdModule?key=\"" + id + "\""
+	answer := req.SendAndGetResult("")
+	return answer.Body.ToString()
+}
+
 type Couch_db_default_fields struct{
 	Id string `json:"_id"`
 	Rev string `json:"_rev"`

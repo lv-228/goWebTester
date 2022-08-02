@@ -49,6 +49,25 @@ func NewTestModuleJsonPut(id string, db string, tt string, start time.Time) test
 	return new
 }
 
+type Test_module_json_get struct{
+	Id string
+	Key string
+	Value map[string]interface{}
+}
+
+type Test_module_json_rows struct{
+	Rows []Test_module_json_get
+}
+
+func NewTestModuleJsonRowsFromByte(data []byte) Test_module_json_rows{
+	new := Test_module_json_rows{}
+	err := json.Unmarshal(data, &new)
+	if err != nil{
+		log.Fatalln(err)
+	}
+	return new
+}
+
 type result_test_module_json_put struct{
 	Id string `json:"_id"`
 	Id_module string

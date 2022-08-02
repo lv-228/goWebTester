@@ -26,6 +26,7 @@ type Page struct {
 	JsonList map[string][]core_data_json.HttpJsonObject
 	TestUrlResult internals_sqli_modules_test.SqliUrlTestJsonObject_array
 	TestResultBody internals_sqli_modules_test.SqliPostTestJsonObject
+	TestModulesRows internals_sqli_modules_test.Test_module_json_rows
 	Headers map[string]string
 }
 
@@ -251,14 +252,63 @@ func sqliUiHandler(w http.ResponseWriter, r *http.Request, title string){
 		sqliUiTestUrl(title, w, r)
 	} else if title == "byerror"{
 		sqliUiByError(title, w, r)
-	} else if title == "viewBodyResult"{
-		sqliViewBodyResult(title, w, r)
-	} else if title == "viewModuleResult"{
-		sqliViewBodyResult(title, w, r)
+	} else if title == "viewResultById"{
+		sqliViewResultById(title, w, r)
+	} else if title == "viewModulesByType"{
+		sqliViewModuleResult(title, w, r)
+	}else if title == "viewResultsByIdModule"{
+		sqliViewResultsByModuleId(title, w, r)
 	}
 }
 
-func sqliViewBodyResult(title string, w http.ResponseWriter, r *http.Request){
+func sqliViewResultsByModuleId(title string, w http.ResponseWriter, r *http.Request){
+	req := core_http.NewReq("GET", "", "json")
+	couch_db := core_nosql.NewCouchDB("http://admin:123456@localhost:5984", "module_result")
+	module_results := couch_db.GetResultsByModuleId(req, "b40caeaecf7f199835cffd88cd098d24")
+
+	p, err1 := loadPage("sqli_view/" + title)
+	if err1 != nil{
+		http.Redirect(w, r, "/main/", http.StatusFound)
+		return
+	}
+
+	p.TestModulesRows = internals_sqli_modules_test.NewTestModuleJsonRowsFromByte([]byte(module_results))
+
+	files := []string{
+		html_folder + "sqli_view/viewResultsByIdModule.tmpl",
+	}
+
+	all_files := append(files, tmpl_files...)
+
+	templates := template.Must(template.ParseFiles(all_files...))
+	renderTemplate(w, "viewResultsByIdModule", p, templates)
+}
+
+func sqliViewModuleResult(title string, w http.ResponseWriter, r *http.Request){
+	req := core_http.NewReq("GET", "", "json")
+	couch_db := core_nosql.NewCouchDB("http://admin:123456@localhost:5984", "module_history")
+	params := r.URL.Query()
+	module_rows := couch_db.GetModulesByType(req, params["type"][0])
+
+	p, err1 := loadPage("sqli_view/" + title)
+	if err1 != nil{
+		http.Redirect(w, r, "/main/", http.StatusFound)
+		return
+	}
+
+	p.TestModulesRows = internals_sqli_modules_test.NewTestModuleJsonRowsFromByte([]byte(module_rows))
+
+	files := []string{
+		html_folder + "sqli_view/viewModulesByType.tmpl",
+	}
+
+	all_files := append(files, tmpl_files...)
+
+	templates := template.Must(template.ParseFiles(all_files...))
+	renderTemplate(w, "viewModulesByType", p, templates)
+}
+
+func sqliViewResultById(title string, w http.ResponseWriter, r *http.Request){
 	req := core_http.NewReq("GET", "", "json")
 	couch_db := core_nosql.NewCouchDB("http://admin:123456@localhost:5984", "module_result")
 	params := r.URL.Query()
@@ -275,13 +325,13 @@ func sqliViewBodyResult(title string, w http.ResponseWriter, r *http.Request){
 	}
 
 	files := []string{
-		html_folder + "sqli_view/viewBodyResult.tmpl",
+		html_folder + "sqli_view/viewResultById.tmpl",
 	}
 
 	all_files := append(files, tmpl_files...)
 
 	templates := template.Must(template.ParseFiles(all_files...))
-	renderTemplate(w, "viewBodyResult", p, templates)
+	renderTemplate(w, "viewResultById", p, templates)
 }
 
 func sqliUiTestUrl(title string, w http.ResponseWriter, r *http.Request){

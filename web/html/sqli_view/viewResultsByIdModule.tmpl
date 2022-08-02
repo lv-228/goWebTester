@@ -1,0 +1,32 @@
+{{template "base" .}}
+
+{{define "title"}}
+	SQLi modules
+{{end}}
+
+{{define "main"}}
+
+	<table class="uk-table uk-table-hover uk-table-divider">
+    <thead>
+        <tr>
+            <th>URL</th>
+            <th>STATUS</th>
+            <th>PAYLOAD</th>
+            <th>TTF</th>
+            <th>VIEW</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{range $key, $value := .TestModulesRows.Rows}}
+        <tr>
+			<td>{{$value.Value.Url}}</td>
+			<td>{{$value.Value.Status}}</td>
+			<td>{{$value.Value.Payload}}</td>
+            <td>{{$value.Value.Ttf}}</td>
+			<td><a href="/sqli_ui/viewResultById?id={{$value.Value._id}}">{{$value.Value._id}}</a></td>
+        </tr>
+        {{end}}
+    </tbody>
+</table>
+
+{{end}}
