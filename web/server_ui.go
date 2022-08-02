@@ -10,6 +10,7 @@ import(
 	//"web_tester/internal/sqli"
 	"encoding/json"
 	"core/sql"
+	"core/nosql"
 	"core/data/json"
 	//"core/os"
 	"core/http"
@@ -24,6 +25,7 @@ type Page struct {
 	Body []byte
 	JsonList map[string][]core_data_json.HttpJsonObject
 	TestUrlResult internals_sqli_modules_test.SqliUrlTestJsonObject_array
+	TestResultBody internals_sqli_modules_test.SqliPostTestJsonObject
 	Headers map[string]string
 }
 
@@ -31,7 +33,7 @@ var conf target.Config
 
 var html_folder = "./web/html/"
 
-var validPath = regexp.MustCompile("^/(brute_module|settings|http_module|resp|sqli_ui|sqli_start_module)/([a-zA-Z0-9]+)$")
+var validPath = regexp.MustCompile("^/(brute_module|settings|http_module|resp|sqli_ui|sqli_start_module|sqli_view)/([a-zA-Z0-9]+)$")
 
 var tmpl_files = []string{
 	html_folder + "templates/base.layout.tmpl",
@@ -251,11 +253,35 @@ func sqliUiHandler(w http.ResponseWriter, r *http.Request, title string){
 		sqliUiByError(title, w, r)
 	} else if title == "viewBodyResult"{
 		sqliViewBodyResult(title, w, r)
+	} else if title == "viewModuleResult"{
+		sqliViewBodyResult(title, w, r)
 	}
 }
 
 func sqliViewBodyResult(title string, w http.ResponseWriter, r *http.Request){
-	
+	req := core_http.NewReq("GET", "", "json")
+	couch_db := core_nosql.NewCouchDB("http://admin:123456@localhost:5984", "module_result")
+	params := r.URL.Query()
+
+	p, err1 := loadPage("sqli_view/" + title)
+	if err1 != nil{
+		http.Redirect(w, r, "/main/", http.StatusFound)
+		return
+	}
+
+	err := json.Unmarshal([]byte(couch_db.GetByUUID(req, params["id"][0])), &p.TestResultBody)
+	if err != nil{
+		log.Fatalln(err)
+	}
+
+	files := []string{
+		html_folder + "sqli_view/viewBodyResult.tmpl",
+	}
+
+	all_files := append(files, tmpl_files...)
+
+	templates := template.Must(template.ParseFiles(all_files...))
+	renderTemplate(w, "viewBodyResult", p, templates)
 }
 
 func sqliUiTestUrl(title string, w http.ResponseWriter, r *http.Request){
@@ -274,7 +300,6 @@ func sqliUiTestUrl(title string, w http.ResponseWriter, r *http.Request){
 	all_files := append(files, tmpl_files...)
 
 	JsonUrlTestObjects := internals_sqli_modules_test.SqliUrlTestJsonObject_array{}
-	JsonUrlTestObjects.GetDataFromFile("./modules_data/sqli/test_url/2022-July-27.json")
 
 	p.TestUrlResult = JsonUrlTestObjects
 

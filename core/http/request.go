@@ -18,10 +18,17 @@ type Req struct{
 	Headers_obj *HeaderData
 }
 
-func (r *Req) Create(req_type string, url string, headers *HeaderData){
+func NewReq(req_type string, url string, data_type string) *Req{
+	headers := &HeaderData{}
+	headers.SetHeadersFromConfig()
+
+	r := &Req{}
+
+	r.Data_type = data_type
 	r.Req_type = req_type
 	r.Url = url
 	r.Headers_obj = headers
+	return r
 }
 
 func (r *Req) SendAndGetResult(data string) *Resp{

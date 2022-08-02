@@ -36,16 +36,7 @@ func (t *Test_input) RunPostTest(url string, db_obj Test_interface){
 	test_string_strings := test_data_string.GenerateStrings()
 	test_numeric_strings := test_data_numeric.GenerateStrings()
 
-
-	headers := &core_http.HeaderData{}
-
-	headers.SetHeadersFromConfig()
-
-	request := &core_http.Req{
-    	Req_type: "GET",
-    	Headers_obj: headers,
-    	Data_type: "url",
-    }
+	request := core_http.NewReq("GET", url, "url")
 
     couch_db := core_nosql.NewCouchDB("http://admin:123456@localhost:5984", "module_history")
     couch_uuid := couch_db.GetUUIDs(request, 1)

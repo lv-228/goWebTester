@@ -1,0 +1,16 @@
+{{template "base" .}}
+
+{{define "title"}}
+	SQLi result by UUID
+{{end}}
+
+{{define "main"}}
+	<h3>URL:</h3>
+	{{.TestResultBody.Url}}
+	<h3>Payload:</h3>
+	{{.TestResultBody.Payload}}
+	<h3>Response status:</h3>
+	{{.TestResultBody.Status}}
+	<h3>Response body:</h3>
+	{{.TestResultBody.Body}}
+{{end}}
