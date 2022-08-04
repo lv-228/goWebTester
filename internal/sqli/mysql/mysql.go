@@ -61,7 +61,15 @@ func NewMysql() Mysql{
 		"AND false",
 		"1-false",
 		"1-true",
-		"1*1",
+		"1*5",
+	}
+
+	mysql.Data.DefaultFuncs = map[string][]string{
+		"current_user": []string{"user()",},
+		"version": []string{"VERSION()","@@version",},
+		"current_database": []string{"database()",}
+		"system_user": []string{"system_user()",}
+		"base_dir": []string{"@@basedir",}
 	}
 
 	return mysql

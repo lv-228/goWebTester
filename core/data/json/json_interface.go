@@ -87,12 +87,19 @@ func SaveToJsonFile(data []byte, path string){
 	}
 }
 
-func ToJSON(str string) string {
+func UrlToJSON(str string) string {
 	m, err := url.ParseQuery(str)
 	if err != nil {
 		log.Fatal(err)
 	}
-	js, err := json.Marshal(m)
+
+	answer := make(map[string]string, len(m))
+
+	for key, value := range m{
+		answer[key] = value[0]
+	}
+
+	js, err := json.Marshal(answer)
 	if err != nil {
 		log.Fatal(err)
 	}

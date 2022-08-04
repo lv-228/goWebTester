@@ -171,12 +171,6 @@ func sendRequestHandler(w http.ResponseWriter, r *http.Request, title string){
 
     log.Println(jsonFile)
 
-	// request1 := &http_funcs.ReqData{
-	// 	Req_type: r.FormValue("method"),
-	// 	Url: conf.Target["host"] + r.FormValue("url"),
-	// 	Headers: headers_request,
-	// }
-
 	// bfReplace := &Replace{}
 
 	// //if header_key != ""{
@@ -184,8 +178,6 @@ func sendRequestHandler(w http.ResponseWriter, r *http.Request, title string){
 	// 	// if err != nil{
 	// 	// 	log.Fatalln("Ошибка шага")
 	// 	// }
-
-		
 
 	// 	//log.Println(http_funcs.GetHtmlTagByNameAndClass(body, "p", "is-warning"))
 	// //}
@@ -197,8 +189,6 @@ func sendRequestHandler(w http.ResponseWriter, r *http.Request, title string){
 	// 	}
 
 	// 	words := strings.Fields(string(bf_file))
-
-		
 
 	// 	bfReplace.Create(r.FormValue("data"), words)
 

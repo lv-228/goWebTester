@@ -80,4 +80,5 @@ type Sql_values struct{
 	SelectVersion []string
 	Default_db []string
 	Numeric_testing []string
+	Default_funcs map[string][]string
 }

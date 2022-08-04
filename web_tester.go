@@ -10,6 +10,7 @@ import (
 	"web_tester/target"
 	//"internal/sqli/modules/test"
 	//"core/http"
+	//"core/data/json"
 	//"core/data/http"
 	//"core/html/domobjs"
 	//"internal/sqli/mysql"
@@ -65,6 +66,14 @@ func main(){
 	// test_input_module := internals_sqli_modules_test.Test_input{}
 
 	// test_input_module.RunPostTest("http://localhost/index_action.php", mysql_interface)
+// 
+	// req := core_http.NewReq("POST", "http://localhost:3000/rest/user/login", "json")
+
+	// test := req.SendAndGetResult(core_data_json.UrlToJSON("email=test@mail.ru&password=123"))
+
+	// log.Println(core_data_json.UrlToJSON("email=test@mail.ru&password=123"))
+
+	// log.Println(test.Body.ToString())
 
 	// log.Fatalln("END")
 
