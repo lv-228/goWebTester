@@ -41,6 +41,23 @@ type Couch_db_default_fields struct{
 	Rev string `json:"_rev"`
 }
 
+type Couch_db_put_result struct{
+	Id string
+	Rev string
+	Ok bool
+}
+
+func NewCouchDbPutResult(result []byte) Couch_db_put_result{
+	new := Couch_db_put_result{}
+
+	err := json.Unmarshal(result, &new)
+	if err != nil{
+		log.Fatalln(err)
+	}
+
+	return new
+}
+
 type Couch_db_uuid_result struct{
 	Uuids []string
 }

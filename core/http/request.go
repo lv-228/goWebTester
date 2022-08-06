@@ -191,10 +191,9 @@ func NewReqToJson(req *Req) Req_to_json_put{
 	return new
 }
 
-func (r *Req_to_json_put) Put(){
+func (r *Req_to_json_put) Put() string{
 	request := NewReq("GET", "", "url")
-	headers := &HeaderData{}
-	headers.SetHeadersFromConfig()
+
 	couch_db := core_nosql.NewCouchDB("http://admin:123456@localhost:5984", "http_history")
 	request.Url = couch_db.GetUUIDsURL(1)
 
@@ -210,5 +209,7 @@ func (r *Req_to_json_put) Put(){
 
 	answer := request.SendAndGetResult(string(json))
 
-	log.Fatalln(answer.Body.ToString())
+	res := core_nosql.NewCouchDbPutResult(answer.Body.Value)
+
+	return res.Id
 }

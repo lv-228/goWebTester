@@ -158,11 +158,13 @@ func sendRequestHandler(w http.ResponseWriter, r *http.Request, title string){
 
     request_to_json := core_http.NewReqToJson(request)
 
-    request_to_json.Put()
+    req_uuid := request_to_json.Put()
 
     response := request.SendAndGetResult(r.FormValue("data"))
 
-    log.Fatalln(response.Body.ToString())
+    response_to_json := core_http.NewRespToJsonPut(response)
+
+    response_to_json.Put(req_uuid)
 
 }
 
