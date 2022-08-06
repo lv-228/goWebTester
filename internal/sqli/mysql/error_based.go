@@ -1,19 +1,21 @@
 package sqli_mysql
 
 import(
-	"core/data/replace"
+	//"core/data/replace"
 )
 
 type Error_based struct{
-	Query map[string]string
+	Funcs map[string]string
 }
 
-func NewErrorBased(){
+func NewErrorBased() Error_based{
 	new := Error_based{}
 
-	query := make(map[string]string, 5)
+	funcs := make(map[string][]string, 3)
 
-	query["Geo_functions1"] = "SELECT ST_LatFromGeoHash(" + core_data_replace.Var_simbol + ")"
-	query["Geo_functions2"] = "SELECT ST_LongFromGeoHash(" + core_data_replace.Var_simbol + ")"
-	query["Geo_functions3"] = "SELECT ST_PointFromGeoHash(" + core_data_replace.Var_simbol + ")"
+	funcs["Geo_functions1"] = []string{"SELECT ST_LatFromGeoHash(", ")",}
+	funcs["Geo_functions2"] = []string{"SELECT ST_LongFromGeoHash(", ")",}
+	funcs["Geo_functions3"] = []string{"SELECT ST_PointFromGeoHash(", ")",}
+
+	return new
 }

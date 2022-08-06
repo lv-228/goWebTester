@@ -60,15 +60,15 @@ func ParseTextareaHeaders(textarea_data string) map[string][]string{
 
 	//get header: value
 	for i := 0; ;i++{
-		end_string := strings.Index(textarea_data, "~")
+		end_string := strings.Index(textarea_data, "\r")
 		if end_string == -1 {
 			break
 		}
 		header_value[i] = textarea_data[:end_string]
-		textarea_data = textarea_data[end_string+3:]
+		textarea_data = textarea_data[end_string+2:]
 	}
 
-	answer := map[string][]string{}
+	answer := make(map[string][]string, len(header_value))
 	
 	for _, elem := range header_value{
 		delimeter := strings.Index(elem, ":")

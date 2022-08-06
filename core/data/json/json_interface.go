@@ -5,7 +5,7 @@ import(
 	"encoding/json"
 	"log"
 	"os"
-	"core/http"
+	//"core/http"
 	"strings"
 	"core/os"
 )
@@ -16,14 +16,14 @@ type Save_to_json interface{
 
 type HttpJsonObject struct{
 	id int
-	Request_obj *core_http.Req
-	Response_obj *core_http.Resp
+	// Request_obj *core_http.Req
+	// Response_obj *core_http.Resp
 }
 
-func (h *HttpJsonObject) CreateHttpJsonObject(request *core_http.Req, response *core_http.Resp){
-	h.Request_obj = request
-	h.Response_obj = response
-}
+// func (h *HttpJsonObject) CreateHttpJsonObject(request *core_http.Req, response *core_http.Resp){
+// 	h.Request_obj = request
+// 	h.Response_obj = response
+// }
 
 func (h *HttpJsonObject) ToByte() []byte{
 	answer, err := json.Marshal(h)

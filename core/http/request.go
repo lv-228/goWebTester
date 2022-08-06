@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"bytes"
 	"net/url"
+	"core/data/json"
 	//"crypto/tls"
 )
 
@@ -144,6 +145,7 @@ func GetDataReader(request *Req, data string) *bytes.Buffer{
 	data_reader := bytes.NewBuffer([]byte(data))
 	switch request.Headers_obj.Headers["Content-Type"][0] {
 		case "application/json":
+			data = core_data_json.UrlToJSON(data)
 			data_reader = bytes.NewBuffer([]byte(data))
 		case "application/x-www-form-urlencoded":
 			url_data := url.Values{}

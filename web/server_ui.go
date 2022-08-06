@@ -160,16 +160,18 @@ func sendRequestHandler(w http.ResponseWriter, r *http.Request, title string){
 
     response := request.SendAndGetResult(r.FormValue("data"))
 
-    jsonHttpObject := &core_data_json.HttpJsonObject{
-    	Request_obj: request,
-    	Response_obj: response,
-    }
+    log.Fatalln(response.Body.ToString())
 
-    jsonFile := &core_data_json.JsonFile{}
+    // jsonHttpObject := &core_data_json.HttpJsonObject{
+    // 	Request_obj: request,
+    // 	Response_obj: response,
+    // }
 
-    jsonFile.SaveJsonFile(jsonHttpObject)
+    // jsonFile := &core_data_json.JsonFile{}
 
-    log.Println(jsonFile)
+    // jsonFile.SaveJsonFile(jsonHttpObject)
+
+    // log.Println(jsonFile)
 
 	// bfReplace := &Replace{}
 
