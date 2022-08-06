@@ -1,6 +1,6 @@
 {{define "request"}}
 <form class="uk-form-horizontal uk-margin-large" action="/resp/response" method="POST">
-<textarea name="list_headers" rows="25" cols="60" style="white-space: pre-line;" spellcheck="false">{{range $index, $element := .Headers}}{{ $index }}: {{ $element }}~&#13;&#10;{{else}}<div><strong>No data</strong></div>{{end}}</textarea>
+<textarea name="list_headers" rows="25" cols="60" style="white-space: pre-line;" spellcheck="false">{{range $index, $element := .Headers}}{{ $index }}: {{ $element }} {{else}}<div><strong>No data</strong></div>{{end}}</textarea>
     <div class="uk-margin">
         <label class="uk-form-label" for="form-horizontal-text">URL</label>
         <div class="uk-form-controls">
@@ -11,7 +11,7 @@
     Символ для выделения места изменения значений ¡
 
     <div class="uk-margin">
-        <label class="uk-form-label" for="form-horizontal-text">DATA JSON</label>
+        <label class="uk-form-label" for="form-horizontal-text">Payload</label>
         <div class="uk-form-controls">
             <input class="uk-input" id="form-horizontal-text" type="text" placeholder="DATA" name="data">
         </div>

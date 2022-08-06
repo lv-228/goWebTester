@@ -1,0 +1,70 @@
+{
+  "Elem": [
+    {
+      "Url": "http://localhost/index_action.php?str='",
+      "Status": 200,
+      "Body": "Error!: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''''' at line 1\u003cbr/\u003e",
+      "Ttf": 7435687
+    },
+    {
+      "Url": "http://localhost/index_action.php?str=''",
+      "Status": 200,
+      "Body": "object(PDOStatement)#2 (1) {\n  [\"queryString\"]=\u003e\n  string(34) \"SELECT * FROM user WHERE id = ''''\"\n}\n",
+      "Ttf": 7700196
+    },
+    {
+      "Url": "http://localhost/index_action.php?str=\"",
+      "Status": 200,
+      "Body": "object(PDOStatement)#2 (1) {\n  [\"queryString\"]=\u003e\n  string(33) \"SELECT * FROM user WHERE id = '\"'\"\n}\n",
+      "Ttf": 6496530
+    },
+    {
+      "Url": "http://localhost/index_action.php?str=\"\"",
+      "Status": 200,
+      "Body": "object(PDOStatement)#2 (1) {\n  [\"queryString\"]=\u003e\n  string(34) \"SELECT * FROM user WHERE id = '\"\"'\"\n}\n",
+      "Ttf": 4815671
+    },
+    {
+      "Url": "http://localhost/index_action.php?str=AND 1",
+      "Status": 200,
+      "Body": "object(PDOStatement)#2 (1) {\n  [\"queryString\"]=\u003e\n  string(37) \"SELECT * FROM user WHERE id = 'AND 1'\"\n}\n",
+      "Ttf": 6975733
+    },
+    {
+      "Url": "http://localhost/index_action.php?str=AND 0",
+      "Status": 200,
+      "Body": "object(PDOStatement)#2 (1) {\n  [\"queryString\"]=\u003e\n  string(37) \"SELECT * FROM user WHERE id = 'AND 0'\"\n}\n",
+      "Ttf": 4630780
+    },
+    {
+      "Url": "http://localhost/index_action.php?str=AND true",
+      "Status": 200,
+      "Body": "object(PDOStatement)#2 (1) {\n  [\"queryString\"]=\u003e\n  string(40) \"SELECT * FROM user WHERE id = 'AND true'\"\n}\n",
+      "Ttf": 6452549
+    },
+    {
+      "Url": "http://localhost/index_action.php?str=AND false",
+      "Status": 200,
+      "Body": "object(PDOStatement)#2 (1) {\n  [\"queryString\"]=\u003e\n  string(41) \"SELECT * FROM user WHERE id = 'AND false'\"\n}\n",
+      "Ttf": 4212149
+    },
+    {
+      "Url": "http://localhost/index_action.php?str=1-false",
+      "Status": 200,
+      "Body": "object(PDOStatement)#2 (1) {\n  [\"queryString\"]=\u003e\n  string(39) \"SELECT * FROM user WHERE id = '1-false'\"\n}\nArray\n(\n    [id] =\u003e 1\n    [0] =\u003e 1\n    [login] =\u003e admin\n    [1] =\u003e admin\n    [email] =\u003e ricardo@mail.com\n    [2] =\u003e ricardo@mail.com\n)\n\u003cbr\u003e-----",
+      "Ttf": 3370184
+    },
+    {
+      "Url": "http://localhost/index_action.php?str=1-true",
+      "Status": 200,
+      "Body": "object(PDOStatement)#2 (1) {\n  [\"queryString\"]=\u003e\n  string(38) \"SELECT * FROM user WHERE id = '1-true'\"\n}\nArray\n(\n    [id] =\u003e 1\n    [0] =\u003e 1\n    [login] =\u003e admin\n    [1] =\u003e admin\n    [email] =\u003e ricardo@mail.com\n    [2] =\u003e ricardo@mail.com\n)\n\u003cbr\u003e-----",
+      "Ttf": 4665765
+    },
+    {
+      "Url": "http://localhost/index_action.php?str=1*5",
+      "Status": 200,
+      "Body": "object(PDOStatement)#2 (1) {\n  [\"queryString\"]=\u003e\n  string(35) \"SELECT * FROM user WHERE id = '1*5'\"\n}\nArray\n(\n    [id] =\u003e 1\n    [0] =\u003e 1\n    [login] =\u003e admin\n    [1] =\u003e admin\n    [email] =\u003e ricardo@mail.com\n    [2] =\u003e ricardo@mail.com\n)\n\u003cbr\u003e-----",
+      "Ttf": 5062274
+    }
+  ]
+}

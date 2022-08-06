@@ -26,9 +26,6 @@ func (t *Test_input) do(value string, JsonObject *SqliPostTestJsonObject, req co
 }
 
 func (t *Test_input) RunPostTest(url string, db_obj Test_interface){
-	t.Url = &core_http.Url{
-			url,
-		}
 
 	test_data_string := core_data_replace.NewReplaceS([]string{"str", "test2", "test3"}, db_obj.GetQuoteSymbols(), []string{"4", "5", "6"})
 	test_data_numeric := core_data_replace.NewReplaceS([]string{"str", "test2", "test3"}, db_obj.GetNumericTesting(), []string{"4", "5", "6"})
@@ -39,8 +36,7 @@ func (t *Test_input) RunPostTest(url string, db_obj Test_interface){
 	request := core_http.NewReq("GET", url, "url")
 
     couch_db := core_nosql.NewCouchDB("http://admin:123456@localhost:5984", "module_history")
-    couch_uuid := couch_db.GetUUIDs(request, 1)
-	cuuid := core_nosql.NewCouchDBUuidResult([]byte(couch_uuid))
+	cuuid := core_nosql.NewCouchDBUuidResult([]byte(couch_db.GetUUIDsURL(1)))
     test_module_json := NewTestModuleJsonPut(cuuid.Uuids[0], db_obj.GetName(), "test_input", time.Now().UTC())
 	test_module_json.Put(request, couch_db)
 
@@ -57,13 +53,6 @@ func (t *Test_input) RunPostTest(url string, db_obj Test_interface){
     }
 
     JsonObjects.Put(cuuid.Uuids[0], request, couch_db)
-
- //    rawDataOut, err := json.MarshalIndent(&JsonObjects, "", "  ")
-	// if err != nil{
-	// 	log.Fatalln(err)
-	// }
-
-	//core_data_json.SaveToJsonFile(rawDataOut, "./modules_data/" + JsonObject.GetFolderFromSave() + "/")
 }
 
 type SqliPostTestJsonObject struct {
@@ -99,7 +88,7 @@ type SqliPostTestJsonObject_array struct{
 func (sq *SqliPostTestJsonObject_array) Put(id_module string, req *core_http.Req, c core_nosql.Couch_db){
 	req.Data_type = "json"
 	req.Req_type = "GET"
-	couch_uuid := c.GetUUIDs(req, len(sq.Elem))
+	couch_uuid := c.GetUUIDsURL(len(sq.Elem))
 	c.Db = "module_result"
 	uuid := core_nosql.NewCouchDBUuidResult([]byte(couch_uuid))
 	for key, value := range sq.Elem{

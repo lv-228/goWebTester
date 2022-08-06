@@ -11,6 +11,7 @@ import (
 	"bytes"
 	"net/url"
 	"core/data/json"
+	"core/nosql"
 	//"crypto/tls"
 )
 
@@ -37,6 +38,7 @@ func (r *Req) SendAndGetResult(data string) *Resp{
 }
 
 func (r *Req) sendRequest(data string) *Resp{
+
 	data_reader := GetDataReader(r, data)
 
 	req, err := http.NewRequest(r.Req_type, r.Url, data_reader)
@@ -143,9 +145,12 @@ func GetRequest(url string) *http.Response{
 
 func GetDataReader(request *Req, data string) *bytes.Buffer{
 	data_reader := bytes.NewBuffer([]byte(data))
+
 	switch request.Headers_obj.Headers["Content-Type"][0] {
 		case "application/json":
-			data = core_data_json.UrlToJSON(data)
+			if json.Valid([]byte(data)) == false{
+				data = core_data_json.UrlToJSON(data)
+			}
 			data_reader = bytes.NewBuffer([]byte(data))
 		case "application/x-www-form-urlencoded":
 			url_data := url.Values{}
@@ -159,22 +164,51 @@ func GetDataReader(request *Req, data string) *bytes.Buffer{
 	return data_reader
 }
 
-// func RequestRepeater(SendRequest func(*ReqData, string) (map[string][]string, string), request *ReqData, data string, bf_journal_path string){
+type Req_to_json_put struct{
+	Id string `json: "_id"`
+	Req_type, Url, Data_type string
+	Headers map[string]string
+}
 
-// 	words := strings.Fields(string(bf_file))
+func NewReqToJson(req *Req) Req_to_json_put{
 
-// 	if request.Headers["Content-Type"] == "application/json"{
-// 		for _, elem := range words{
-// 			headers, _ := SendRequest(request, valueJsonReplace(data, elem, Var_simbol_data))
-// 			log.Println(elem, headers)
-// 			//log.Println(GetHtmlTagByNameAndClass(body, "p", ))
-// 		}
-// 	}	else if request.Headers["Content-Type"] == "application/x-www-form-urlencoded"{
-// 		for _, elem := range words{
-// 			headers, body := SendRequest(request, valuePurlReplace(data, elem, Var_simbol_data))
-// 			log.Println(elem, headers)
-// 			log.Println(GetHtmlTagByNameAndClass(body, "p", "is-warning"))
-// 		}
-// 	}
+	new := Req_to_json_put{}
 
-// }
+	new.Req_type = req.Req_type
+	new.Url = req.Url
+	new.Data_type = req.Headers_obj.Headers["Content-Type"][0]
+
+	headers := make(map[string]string, len(req.Headers_obj.Headers))
+
+	for key, value := range req.Headers_obj.Headers{
+		for _, elem := range value{
+			headers[key] = elem
+		}
+	}
+
+	new.Headers = headers
+	
+	return new
+}
+
+func (r *Req_to_json_put) Put(){
+	request := NewReq("GET", "", "url")
+	headers := &HeaderData{}
+	headers.SetHeadersFromConfig()
+	couch_db := core_nosql.NewCouchDB("http://admin:123456@localhost:5984", "http_history")
+	request.Url = couch_db.GetUUIDsURL(1)
+
+	r.Id = core_nosql.NewCouchDBUuidResult([]byte(request.SendAndGetResult("").Body.ToString())).Uuids[0]
+
+	request.Req_type = "PUT"
+	request.Data_type = "json"
+	request.Url = couch_db.Url + "/" + couch_db.Db + "/" + r.Id
+	json, err := json.Marshal(r)
+	if err != nil{
+		log.Fatalln(err)
+	}
+
+	answer := request.SendAndGetResult(string(json))
+
+	log.Fatalln(answer.Body.ToString())
+}

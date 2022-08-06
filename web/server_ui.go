@@ -150,92 +150,19 @@ func sendRequestHandler(w http.ResponseWriter, r *http.Request, title string){
 
     headerReplace.AppendValues([]string{r.FormValue("values")}, true)
 
-    //log.Println(headerReplace)
-
     request := &core_http.Req{
     	Req_type: r.FormValue("method"),
     	Url: r.FormValue("url"),
     	Headers_obj: headerData,
     }
 
+    request_to_json := core_http.NewReqToJson(request)
+
+    request_to_json.Put()
+
     response := request.SendAndGetResult(r.FormValue("data"))
 
     log.Fatalln(response.Body.ToString())
-
-    // jsonHttpObject := &core_data_json.HttpJsonObject{
-    // 	Request_obj: request,
-    // 	Response_obj: response,
-    // }
-
-    // jsonFile := &core_data_json.JsonFile{}
-
-    // jsonFile.SaveJsonFile(jsonHttpObject)
-
-    // log.Println(jsonFile)
-
-	// bfReplace := &Replace{}
-
-	// //if header_key != ""{
-	// 	// step, err := strconv.Atoi(r.FormValue("step"))
-	// 	// if err != nil{
-	// 	// 	log.Fatalln("Ошибка шага")
-	// 	// }
-
-	// 	//log.Println(http_funcs.GetHtmlTagByNameAndClass(body, "p", "is-warning"))
-	// //}
-
-	// if(r.FormValue("bf_journal") != ""){
-	// 	bf_file, err := os.ReadFile(r.FormValue("bf_journal"))
-	// 	if err != nil{
-	// 		log.Fatalln(err)
-	// 	}
-
-	// 	words := strings.Fields(string(bf_file))
-
-	// 	bfReplace.Create(r.FormValue("data"), words)
-
-	// // 	if request.Headers["Content-Type"] == "application/json"{
-	// // 	for _, elem := range words{
-	// // 		headers, _ := SendRequest(request, valueJsonReplace(data, elem, Var_simbol_data))
-	// // 		log.Println(elem, headers)
-	// // 		//log.Println(GetHtmlTagByNameAndClass(body, "p", ))
-	// // 	}
-	// // }	else if request.Headers["Content-Type"] == "application/x-www-form-urlencoded"{
-	// // 	for _, elem := range words{
-	// // 		headers, body := SendRequest(request, valuePurlReplace(data, elem, Var_simbol_data))
-	// // 		log.Println(elem, headers)
-	// // 		log.Println(GetHtmlTagByNameAndClass(body, "p", "is-warning"))
-	// // 	}
-	// // }
-		
-	// }
-
-	// for ;; {
-	// 	str_bf, err_bf := bfReplace.Itteration(false)
-	// 	str_head, err_head := headerReplace.Itteration(false)
-
-	// 	if err_bf != nil && err_head != nil{
-	// 		log.Fatalln("DATA END")
-	// 	}
-
-	// 	headers_request[header_key] = str_head
-	// 	request1.Headers = headers_request
-	// 	headers, _ := http_funcs.SendRequest(request1, str_bf)
-	// 	log.Println(headers_request, headers, str_bf)
-	// }
-
-	// _, body_response := http_funcs.SendRequest(request1, r.FormValue("data"))
-
-	// p := &Page{Title: title, Body: []byte(body_response)}
-
-	// files := []string{
-	// 	html_folder + "req_resp/response.tmpl",
-	// }
-
-	// all_files := append(files, tmpl_files...)
-	// templates := template.Must(template.ParseFiles(all_files...))
-
-	// renderTemplate(w, "response", p, templates)
 
 }
 
@@ -256,7 +183,8 @@ func sqliUiHandler(w http.ResponseWriter, r *http.Request, title string){
 func sqliViewResultsByModuleId(title string, w http.ResponseWriter, r *http.Request){
 	req := core_http.NewReq("GET", "", "json")
 	couch_db := core_nosql.NewCouchDB("http://admin:123456@localhost:5984", "module_result")
-	module_results := couch_db.GetResultsByModuleId(req, "b40caeaecf7f199835cffd88cd098d24")
+	req.Url = couch_db.GetResultsByModuleIdURL("b40caeaecf7f199835cffd88cd098d24")
+	module_results := req.SendAndGetResult("")
 
 	p, err1 := loadPage("sqli_view/" + title)
 	if err1 != nil{
@@ -264,7 +192,7 @@ func sqliViewResultsByModuleId(title string, w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	p.TestModulesRows = internals_sqli_modules_test.NewTestModuleJsonRowsFromByte([]byte(module_results))
+	p.TestModulesRows = internals_sqli_modules_test.NewTestModuleJsonRowsFromByte([]byte(module_results.Body.ToString()))
 
 	files := []string{
 		html_folder + "sqli_view/viewResultsByIdModule.tmpl",
@@ -280,7 +208,8 @@ func sqliViewModuleResult(title string, w http.ResponseWriter, r *http.Request){
 	req := core_http.NewReq("GET", "", "json")
 	couch_db := core_nosql.NewCouchDB("http://admin:123456@localhost:5984", "module_history")
 	params := r.URL.Query()
-	module_rows := couch_db.GetModulesByType(req, params["type"][0])
+	req.Url = couch_db.GetModulesByTypeURL(params["type"][0])
+	module_rows := req.SendAndGetResult("")
 
 	p, err1 := loadPage("sqli_view/" + title)
 	if err1 != nil{
@@ -288,7 +217,7 @@ func sqliViewModuleResult(title string, w http.ResponseWriter, r *http.Request){
 		return
 	}
 
-	p.TestModulesRows = internals_sqli_modules_test.NewTestModuleJsonRowsFromByte([]byte(module_rows))
+	p.TestModulesRows = internals_sqli_modules_test.NewTestModuleJsonRowsFromByte([]byte(module_rows.Body.ToString()))
 
 	files := []string{
 		html_folder + "sqli_view/viewModulesByType.tmpl",
@@ -311,7 +240,11 @@ func sqliViewResultById(title string, w http.ResponseWriter, r *http.Request){
 		return
 	}
 
-	err := json.Unmarshal([]byte(couch_db.GetByUUID(req, params["id"][0])), &p.TestResultBody)
+	req.Url = couch_db.GetByUUIDURL(params["id"][0])
+
+	elem := req.SendAndGetResult("")
+
+	err := json.Unmarshal([]byte(elem.Body.ToString()), &p.TestResultBody)
 	if err != nil{
 		log.Fatalln(err)
 	}
@@ -394,6 +327,13 @@ func sqliStartTesturl(title string, w http.ResponseWriter, r *http.Request){
 	test_module := internals_sqli_modules_test.Test_url{}
 	mysql_sqli_interface := sqli_mysql.NewMysqlInterface()
 	test_module.RunUrlTest(r.FormValue("url"), mysql_sqli_interface)
+
+}
+
+func sqliStartTestPost(title string, w http.ResponseWriter, r *http.Request){
+	test_module := internals_sqli_modules_test.Test_input{}
+	mysql_sqli_interface := sqli_mysql.NewMysqlInterface()
+	test_module.RunPostTest(r.FormValue("url"), mysql_sqli_interface)
 
 }
 
