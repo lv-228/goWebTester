@@ -61,7 +61,7 @@ func NewRespToJsonPut(response *Resp) Resp_to_json_put{
 	return new
 }
 
-func (r *Resp_to_json_put) Put(request_id string){
+func (r *Resp_to_json_put) Put(request_id string) string{
 	r.RequestId = request_id
 
 	request := NewReq("GET", "", "url")
@@ -81,5 +81,26 @@ func (r *Resp_to_json_put) Put(request_id string){
 
 	answer := request.SendAndGetResult(string(json))
 
-	log.Fatalln(answer.Body.ToString())
+	res := core_nosql.NewCouchDbPutResult(answer.Body.Value)
+
+	return res.Id
+}
+
+type Resp_to_json_get struct{
+	Id string
+	Key string
+	Value map[string]interface{}
+}
+
+type Resp_to_json_rows struct{
+	Rows []Resp_to_json_get
+}
+
+func NewRespToJsonRowsFromByte(data []byte) Resp_to_json_rows{
+	new := Resp_to_json_rows{}
+	err := json.Unmarshal(data, &new)
+	if err != nil{
+		log.Fatalln(err)
+	}
+	return new
 }

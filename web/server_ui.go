@@ -27,6 +27,8 @@ type Page struct {
 	TestUrlResult internals_sqli_modules_test.SqliUrlTestJsonObject_array
 	TestResultBody internals_sqli_modules_test.SqliPostTestJsonObject
 	TestModulesRows internals_sqli_modules_test.Test_module_json_rows
+	RequestList core_http.Req_to_json_rows
+	ResponseList core_http.Resp_to_json_rows
 	Headers map[string]string
 }
 
@@ -103,6 +105,71 @@ func settingsHandler(w http.ResponseWriter, r *http.Request, title string){
 }
 
 func http_moduleHandler(w http.ResponseWriter, r *http.Request, title string){
+	if title == "index"{
+		http_moduleViewIndex(w, r, title)
+	} else if title == "viewRequest"{
+		http_moduleViewRequest(w, r, title)
+	} else if title == "viewResponse"{
+		http_moduleViewResponse(w, r, title)
+	}
+}
+
+func http_moduleViewRequest(w http.ResponseWriter, r *http.Request, title string){
+	req := core_http.NewReq("GET", "", "json")
+	couch_db := core_nosql.NewCouchDB("http://admin:123456@localhost:5984", "http_history")
+	req.Url = couch_db.GetRequestResultsURL()
+	module_results := req.SendAndGetResult("")
+
+	p, err1 := loadPage("http_module/" + title)
+	if err1 != nil{
+		http.Redirect(w, r, "/main/", http.StatusFound)
+		return
+	}
+
+	p.RequestList = core_http.NewReqToJsonRowsFromByte([]byte(module_results.Body.ToString()))
+
+	files := []string{
+		html_folder + "http_module/viewRequest.tmpl",
+	}
+
+	all_files := append(files, tmpl_files...)
+
+	templates := template.Must(template.ParseFiles(all_files...))
+	renderTemplate(w, "viewRequest", p, templates)
+
+
+}
+
+func http_moduleViewResponse(w http.ResponseWriter, r *http.Request, title string){
+	req := core_http.NewReq("GET", "", "json")
+	couch_db := core_nosql.NewCouchDB("http://admin:123456@localhost:5984", "http_response")
+
+	params := r.URL.Query()
+
+	req.Url = couch_db.GetResponseByRequestIdURL(params["key"][0])
+	module_results := req.SendAndGetResult("")
+
+	p, err1 := loadPage("http_module/" + title)
+	if err1 != nil{
+		http.Redirect(w, r, "/main/", http.StatusFound)
+		return
+	}
+
+	p.ResponseList = core_http.NewRespToJsonRowsFromByte([]byte(module_results.Body.ToString()))
+
+	files := []string{
+		html_folder + "http_module/viewResponse.tmpl",
+	}
+
+	all_files := append(files, tmpl_files...)
+
+	templates := template.Must(template.ParseFiles(all_files...))
+	renderTemplate(w, "viewResponse", p, templates)
+
+
+}
+
+func http_moduleViewIndex(w http.ResponseWriter, r *http.Request, title string){
 	p, err := loadPage("http_module/" + title)
 	if err != nil{
 		http.Redirect(w, r, "/main/", http.StatusFound)
@@ -164,7 +231,7 @@ func sendRequestHandler(w http.ResponseWriter, r *http.Request, title string){
 
     response_to_json := core_http.NewRespToJsonPut(response)
 
-    response_to_json.Put(req_uuid)
+    go response_to_json.Put(req_uuid)
 
 }
 

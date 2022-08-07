@@ -36,6 +36,14 @@ func (c *Couch_db) GetResultsByModuleIdURL(id string) string{
 	return c.Url + "/module_result/_design/result/_view/byIdModule?key=\"" + id + "\""
 }
 
+func (c *Couch_db) GetRequestResultsURL() string{
+	return c.Url + "/http_history/_design/requests/_view/get_all"
+}
+
+func (c *Couch_db) GetResponseByRequestIdURL(id string) string{
+	return c.Url + "/http_response/_design/responses/_view/get_by_request_id?key=\"" + id + "\""
+}
+
 type Couch_db_default_fields struct{
 	Id string `json:"_id"`
 	Rev string `json:"_rev"`

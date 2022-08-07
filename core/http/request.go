@@ -213,3 +213,22 @@ func (r *Req_to_json_put) Put() string{
 
 	return res.Id
 }
+
+type Req_to_json_get struct{
+	Id string
+	Key string
+	Value map[string]interface{}
+}
+
+type Req_to_json_rows struct{
+	Rows []Req_to_json_get
+}
+
+func NewReqToJsonRowsFromByte(data []byte) Req_to_json_rows{
+	new := Req_to_json_rows{}
+	err := json.Unmarshal(data, &new)
+	if err != nil{
+		log.Fatalln(err)
+	}
+	return new
+}

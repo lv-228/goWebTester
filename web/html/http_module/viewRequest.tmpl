@@ -1,0 +1,34 @@
+{{template "base" .}}
+
+{{define "title"}}
+	Request list
+{{end}}
+
+{{define "main"}}
+	<table class="uk-table uk-table-hover uk-table-divider">
+    <thead>
+        <tr>
+            <th>URL</th>
+            <th>Type</th>
+            <th>Data type</th>
+            <th>Headers</th>
+            <th>Response</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{range $key, $value := .RequestList.Rows}}
+        <tr>
+			<td>{{$value.Value.Url}}</td>
+			<td>{{$value.Value.Req_type}}</td>
+			<td>{{$value.Value.Data_type}}</td>
+			<td>
+			{{range $key_header, $value_header := $value.Value.Headers}}
+				{{$key_header}}: {{$value_header}}
+			{{end}}
+			</td>
+			<td><a href="/http_module/viewResponse?key={{$value.Id}}">Response</a></td>
+        </tr>
+        {{end}}
+    </tbody>
+</table>
+{{end}}
